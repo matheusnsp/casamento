@@ -311,12 +311,11 @@
   .historia-divider-sprig{
     flex-shrink:0;
   }
-  .sprig-mini{
-    fill:none; stroke:var(--emerald-light); stroke-width:1.2;
-    stroke-linecap:round; stroke-linejoin:round;
-    stroke-dasharray:240; stroke-dashoffset:240;
-    transition:stroke-dashoffset 1.4s .2s var(--ease);
-  }
+  .sprig-mini{ fill:none; stroke:var(--emerald-light); stroke-width:1.2;
+  stroke-linecap:round; stroke-linejoin:round;
+  stroke-dasharray:900; stroke-dashoffset:900;   /* era 240 */
+  transition:stroke-dashoffset 1.4s .2s var(--ease); }
+  
   .historia-section.in-view .sprig-mini,
   .historia-divider.in-view .sprig-mini{ stroke-dashoffset:0; }
 
@@ -600,8 +599,8 @@
     <!-- Divisor decorativo -->
     <div class="historia-divider reveal">
       <div class="historia-divider-sprig">
-        <svg viewBox="0 0 50 70" width="28" height="40">
-          <path class="sprig-mini" d="M25,66 C24,54 26,44 25,34 C24,24 26,16 25,4 M25,35 C19,31 13,29 7,33 C13,34 19,37 25,42 M25,24 C31,20 37,18 43,22 C37,23 31,26 25,31"/>
+        <svg viewBox="0 0 200 260" width="28" height="36">
+          <path class="sprig-mini" d="M100,250 C98,214 102,180 98,148 C95,120 103,95 100,58 M98,150 C82,142 65,138 50,148 C64,150 80,157 98,168 M100,120 C116,110 133,104 150,112 C136,116 118,124 100,136 M99,90 C85,82 70,77 56,84 C68,88 82,94 99,102 M100,60 C90,48 82,38 82,24 C90,32 98,45 100,60 C102,45 110,32 118,24 C118,38 110,48 100,60"/>
         </svg>
       </div>
     </div>
