@@ -987,7 +987,7 @@
     } else if (pix.imagem) {
       var img = new Image();
       img.alt = 'QR code do PIX';
-      img.src = /^data:/.test(pix.imagem) ? pix.imagem : 'data:image/png;base64,' + pix.imagem;
+      img.src = /^(data:|https:)/.test(pix.imagem) ? pix.imagem : 'data:image/png;base64,' + pix.imagem;
       alvo.appendChild(img);
     }
     alvo.hidden = !alvo.innerHTML;
