@@ -345,6 +345,20 @@
 
   /* ============================================================ */
 
+  /* ============================================================
+     PRESENTES (chamada para a lista)
+  ============================================================ */
+  .presentes-cta{ background:var(--paper); padding:5rem 1.5rem 5.4rem; text-align:center; }
+  .presentes-cta-inner{ max-width:520px; margin:0 auto; display:flex; flex-direction:column; align-items:center; }
+  .presentes-cta h2{ font-size:clamp(1.7rem,4vw,2.5rem); font-style:italic; color:var(--ink); margin-top:.9rem; }
+  .presentes-cta p{ margin-top:1.1rem; color:#5F6E68; font-size:.95rem; line-height:1.7; }
+  .cta-btn{ display:inline-block; margin-top:2rem; background:var(--ink); color:var(--paper); border:1px solid var(--ink); padding:1.05rem 2.2rem; font-size:.74rem; letter-spacing:.16em; text-transform:uppercase; font-weight:600; text-decoration:none; position:relative; overflow:hidden; transition:border-color .4s var(--ease); }
+  .cta-btn::before{ content:""; position:absolute; inset:0; background:var(--emerald); transform:scaleX(0); transform-origin:left; transition:transform .5s var(--ease-slow); z-index:0; }
+  .cta-btn span{ position:relative; z-index:1; }
+  .cta-btn:hover::before{ transform:scaleX(1); }
+  .cta-btn:hover{ border-color:var(--emerald); }
+  @media(max-width:480px){ .presentes-cta{ padding:4.2rem 1.25rem 4.5rem; } }
+
   .details-section{ background:var(--paper-dim); padding:5.5rem 0 6rem; border-top:1px solid var(--line); border-bottom:1px solid var(--line); position:relative; z-index:0; overflow:hidden; }
   .details-head{ max-width:640px; margin:0 auto 4rem; text-align:center; display:flex; flex-direction:column; align-items:center; }
   .details-photo{
@@ -465,7 +479,7 @@
     <li><a href="#inicio">Início</a></li>
     <li><a href="#historia">Nossa história</a></li>
     <li><a href="#detalhes">Cerimônia</a></li>
-    <!-- <li><a href="presentes.html">Presentes</a></li> -->
+    <li><a href="presentes.html">Presentes</a></li>
     <li><a href="#confirmar">Confirmar presença</a></li>
   </ul>
   <button class="nav-burger" id="navBurger" aria-label="Abrir menu"><span></span><span></span><span></span></button>
@@ -475,7 +489,7 @@
   <a href="#inicio">Início</a>
   <a href="#historia">Nossa história</a>
   <a href="#detalhes">Cerimônia</a>
-  <!-- <a href="presentes.html">Presentes</a> -->
+  <a href="presentes.html">Presentes</a>
   <a href="#confirmar">Confirmar presença</a>
 </div>
 
@@ -658,6 +672,16 @@
         </div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- PRESENTES -->
+<section class="presentes-cta">
+  <div class="presentes-cta-inner reveal">
+    <span class="eyebrow">Lista de presentes</span>
+    <h2>Um carinho para o nosso começo</h2>
+    <p>Se quiser nos presentear, montamos uma lista com itens para a lua de mel e para a casa nova. Dá para pagar com PIX ou cartão.</p>
+    <a class="cta-btn" href="presentes.html"><span>Ver a lista de presentes</span></a>
   </div>
 </section>
 
