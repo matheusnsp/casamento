@@ -90,9 +90,23 @@ function grupoDoStatus(status) {
   return GRUPOS[String(status || '').toLowerCase()] || 'aguardando';
 }
 
-/* Aceita a transação solta ou embrulhada em "transaction"/"data". */
+/*
+ * Aceita a transação solta (formato real: hash e payment_status no topo, e "transaction" é só o
+ * id do adquirente, um texto) ou embrulhada num objeto "transaction"/"data" (ex.: resposta de estorno).
+ */
+function desembrulhar(bruto) {
+  if (!bruto || typeof bruto !== 'object') return {};
+  if (bruto.hash || bruto.payment_status) return bruto;
+  for (const k of ['transaction', 'data']) {
+    const v = bruto[k];
+    if (Array.isArray(v) && v[0] && typeof v[0] === 'object') return v[0];
+    if (v && typeof v === 'object') return v;
+  }
+  return bruto;
+}
+
 function normalizarTransacao(bruto) {
-  const t = (bruto && (bruto.transaction || bruto.data)) || bruto || {};
+  const t = desembrulhar(bruto);
   const pix = t.pix || {};
   const numero = (v) => (typeof v === 'number' && isFinite(v) ? v : null);
   return {
