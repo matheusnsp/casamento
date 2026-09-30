@@ -13,6 +13,35 @@ function umaVez(valor) {
   return [{ parcelas: 1, valorParcela: valor, total: valor, juros: 0 }];
 }
 
+const primeiro = (...v) => v.find((x) => x !== undefined && x !== null && x !== '');
+
+/*
+ * A API responde { data: [{ installments, installment_amount, total_amount, installment_rate,
+ * min_allowed_amount, max_allowed_amount }] }; o exemplo da documentação usa
+ * { installments: [{ installment, amount, total, interest_rate }] }. Aceita os dois.
+ */
+function extrairLista(dados) {
+  let lista = dados && typeof dados === 'object'
+    ? (dados.data !== undefined ? dados.data : dados.installments !== undefined ? dados.installments : dados)
+    : [];
+  if (lista && !Array.isArray(lista) && typeof lista === 'object') {
+    lista = Array.isArray(lista.installments) ? lista.installments : Object.values(lista);
+  }
+  return Array.isArray(lista) ? lista.filter((x) => x && typeof x === 'object') : [];
+}
+
+function normalizar(x, valor) {
+  const min = Number(primeiro(x.min_allowed_amount, 0)) || 0;
+  const max = Number(primeiro(x.max_allowed_amount, 0)) || 0;
+  return {
+    parcelas: parseInt(primeiro(x.installments, x.installment), 10),
+    valorParcela: Number(primeiro(x.installment_amount, x.amount)),
+    total: Number(primeiro(x.total_amount, x.total)),
+    juros: Number(primeiro(x.installment_rate, x.interest_rate)) || 0,
+    permitido: valor >= min && (!max || valor <= max),
+  };
+}
+
 module.exports = async (req, res) => {
   if (req.method !== 'GET') return metodoNaoPermitido(res, 'GET');
   if (!unicopag.configurado()) return erro(res, 503, 'indisponivel', 'Os pagamentos ainda não foram ativados.');
@@ -44,18 +73,17 @@ module.exports = async (req, res) => {
   let parcial = false;
   try {
     const dados = await unicopag.consultarParcelas(valor);
-    const lista = (dados && (dados.installments || dados.data)) || (Array.isArray(dados) ? dados : []);
+    const lista = extrairLista(dados);
     opcoes = lista
-      .map((x) => ({
-        parcelas: parseInt(x.installment, 10),
-        valorParcela: Number(x.amount),
-        total: Number(x.total),
-        juros: Number(x.interest_rate) || 0,
-      }))
-      .filter((x) => Number.isInteger(x.parcelas) && x.parcelas >= 1 && x.parcelas <= regras.maxParcelas && x.valorParcela > 0 && x.total > 0)
+      .map((x) => normalizar(x, valor))
+      .filter((x) => x.permitido && Number.isInteger(x.parcelas) && x.parcelas >= 1 && x.parcelas <= regras.maxParcelas && x.valorParcela > 0 && x.total > 0)
+      .map(({ permitido, ...resto }) => resto)
       .sort((a, b) => a.parcelas - b.parcelas);
+    if (!opcoes.length) {
+      console.warn(JSON.stringify({ evt: 'parcelas_formato', valor, itens: lista.length, chaves: Object.keys((lista[0]) || dados || {}).slice(0, 10) }));
+    }
   } catch (e) {
-    console.error(JSON.stringify({ evt: 'parcelas_erro', valor, http: e.status, msg: e.message }));
+    console.error(JSON.stringify({ evt: 'parcelas_erro', valor, http: e.status, msg: String(e.message || '').slice(0, 200) }));
     parcial = true;
   }
   if (!opcoes.length) {
