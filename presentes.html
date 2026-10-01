@@ -126,12 +126,24 @@
 
   /* cards com foto: 4 colunas no computador, 3 no tablet, 2 no celular */
   .grade{ list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:1.1rem; }
-  .card{ display:flex; flex-direction:column; min-width:0; background:var(--paper); border:1px solid var(--line); border-radius:6px; overflow:hidden; transition:box-shadow .4s var(--ease), transform .4s var(--ease); }
-  .card:hover{ box-shadow:0 22px 44px -30px rgba(15,32,35,.5); transform:translateY(-2px); }
+  .card{ position:relative; display:flex; flex-direction:column; min-width:0; background:var(--paper); border:1px solid var(--line); border-radius:6px; overflow:hidden; transform-origin:50% 60%; transition:transform .5s var(--ease), box-shadow .5s var(--ease), border-color .5s var(--ease); }
   .card-foto{ position:relative; display:block; aspect-ratio:1 / 1; background:#fff; border-bottom:1px solid var(--line); overflow:hidden; }
   .card-foto.clicavel{ cursor:pointer; }
-  .card-foto img{ display:block; width:100%; height:100%; object-fit:contain; transition:transform .7s var(--ease); }
-  .card:hover .card-foto img{ transform:scale(1.04); }
+  .card-foto img{ display:block; width:100%; height:100%; object-fit:contain; transition:transform .9s var(--ease); }
+  /* mouse em cima: o card cresce, ganha sombra em volta e a foto aproxima (só onde existe mouse, para não "grudar" no toque) */
+  @media (hover:hover) and (pointer:fine){
+    .card:hover{ z-index:2; transform:translateY(-6px) scale(1.03); border-color:rgba(47,117,102,.5); box-shadow:0 0 0 1px rgba(47,117,102,.15), 0 20px 44px -12px rgba(15,32,35,.38), 0 0 30px rgba(15,32,35,.12); }
+    .card:hover .card-foto img{ transform:scale(1.09); }
+  }
+  /* teclado: o mesmo destaque quando o botão do card recebe foco */
+  .card:has(.btn:focus-visible){ z-index:2; transform:translateY(-6px) scale(1.03); border-color:rgba(47,117,102,.5); box-shadow:0 0 0 1px rgba(47,117,102,.15), 0 20px 44px -12px rgba(15,32,35,.38), 0 0 30px rgba(15,32,35,.12); }
+  /* celular: o card "afunda" um pouco no toque */
+  @media (hover:none){ .card:active{ transform:scale(.98); transition-duration:.15s; } }
+  /* entrada: os cards sobem e aparecem conforme a página rola (a classe só entra se o navegador suportar) */
+  .anima-cards .card:not(.surgiu){ opacity:0; }
+  .card.surgiu{ animation:cardSurge .8s var(--ease) backwards; animation-delay:var(--atraso, 0ms); }
+  @keyframes cardSurge{ from{ opacity:0; transform:translateY(22px); } to{ opacity:1; transform:none; } }
+  @media print{ .anima-cards .card{ opacity:1 !important; animation:none !important; } }
   .card-foto .ic{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
   .card-foto .ic svg{ width:64px; height:64px; }
   .card-corpo{ flex:1; display:flex; flex-direction:column; padding:1rem 1rem 1.1rem; }
@@ -142,7 +154,6 @@
   @media(max-width:900px){ .grade{ grid-template-columns:repeat(3, minmax(0,1fr)); } }
   @media(max-width:620px){
     .grade{ grid-template-columns:repeat(2, minmax(0,1fr)); gap:.7rem; }
-    .card:hover{ transform:none; }
     .card-corpo{ padding:.8rem .75rem .85rem; }
     .card h3{ font-size:.93rem; -webkit-line-clamp:4; }
     .card-valor{ font-size:1.06rem; padding-top:.6rem; }
@@ -265,6 +276,9 @@
     html{ scroll-behavior:auto; }
     .ph-sprig path{ stroke-dashoffset:0; animation:none; }
     .ph-inner > .surge{ opacity:1; transform:none; animation:none; }
+    /* sem movimento: fica só a sombra e a borda no hover */
+    .card:hover, .card:has(.btn:focus-visible), .card:active{ transform:none !important; }
+    .card:hover .card-foto img{ transform:none !important; }
   }
 </style>
 </head>
@@ -301,7 +315,7 @@
     </svg>
     <span class="eyebrow on-dark surge">Lista de presentes</span>
     <h1 class="surge">Um carinho para o nosso começo</h1>
-    <p class="ph-texto surge">A sua presença já é o nosso maior presente. Se quiser nos presentear, escolhemos itens para a nossa casa. O valor do presente chega direto para nós dois, e você pode pagar com PIX ou cartão.</p>
+    <p class="ph-texto surge">A sua presença já é o nosso maior presente. Se quiser nos presentear, escolhemos itens para a casa, cotas para a lua de mel e alguns presentes divertidos. O valor chega direto para nós dois, e você pode pagar com PIX ou cartão.</p>
     <ul class="ph-atalhos surge" id="atalhos" aria-label="Categorias da lista"></ul>
   </div>
 </header>
@@ -623,6 +637,7 @@
       atalhos += '<li><a href="#' + esc(c.id) + '">' + esc(c.nome) + '</a></li>';
     });
     $('grupos').innerHTML = html;
+    animarEntrada();
 
     var livre = cat.valorLivre || {};
     if (livre.ativo !== false) {
@@ -643,6 +658,24 @@
     var nota = 'Pagamentos processados pela ÚnicoPag.';
     if (pronto) nota = estado.config.cartao ? 'PIX ou cartão de crédito em até ' + (estado.config.maxParcelas || 1) + 'x. ' + nota : 'Pagamento por PIX. ' + nota;
     $('notaFinal').textContent = nota;
+  }
+
+  // Os cards aparecem subindo conforme entram na tela; os que chegam juntos entram um depois do outro.
+  function animarEntrada(){
+    if (reduceMotion || !('IntersectionObserver' in window)) return;
+    var cards = document.querySelectorAll('#grupos .card');
+    if (!cards.length) return;
+    document.documentElement.classList.add('anima-cards');
+    var obs = new IntersectionObserver(function(entradas){
+      var n = 0;
+      entradas.forEach(function(en){
+        if (!en.isIntersecting) return;
+        en.target.style.setProperty('--atraso', Math.min(n++, 7) * 70 + 'ms');
+        en.target.classList.add('surgiu');
+        obs.unobserve(en.target);
+      });
+    }, { rootMargin: '0px 0px -6% 0px', threshold: 0.08 });
+    Array.prototype.forEach.call(cards, function(c){ obs.observe(c); });
   }
 
   function itemHTML(p, pronto){
