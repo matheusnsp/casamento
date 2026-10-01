@@ -3,6 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+  // O convite (cortina) só abre na entrada pelo início. Quem chega por um link de seção
+  // (#historia, #detalhes, #confirmar...) vai direto para ela. Roda antes de desenhar a página, para a cortina nem piscar.
+  (function(){ var h = location.hash.replace('#', ''); if (h && h !== 'inicio') document.documentElement.classList.add('sem-cortina'); })();
+</script>
 <title>Maria Eduarda & Bernardo — 20 de Janeiro de 2027</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -89,6 +94,7 @@
   .curtain.draw .curtain-skip{ opacity:.7; }
   .curtain.open{ pointer-events:none; }
   .curtain.done{ display:none; }
+  .sem-cortina .curtain{ display:none; }
 
   .hero{
     min-height:100svh; position:relative; display:flex; align-items:center; justify-content:center;
@@ -869,8 +875,11 @@
     revealHero();
     setTimeout(function(){ curtain.classList.add('done'); }, 1300);
   }
-  if(reduceMotion){ curtain.classList.add('done'); revealHero(); }
+  var semCortina = document.documentElement.classList.contains('sem-cortina');
+  if(reduceMotion || semCortina){ curtainDone = true; curtain.classList.add('done'); revealHero(); }
   else {
+    // trocou o endereço para uma seção com o convite ainda fechado: abre o convite e deixa a página ir até lá
+    window.addEventListener('hashchange', function(){ var h = location.hash.replace('#', ''); if(h && h !== 'inicio') finishCurtain(); });
     setTimeout(function(){ curtain.classList.add('draw'); }, 200);
     curtain.addEventListener('click', finishCurtain);
     curtain.addEventListener('touchstart', finishCurtain, {passive:true});
