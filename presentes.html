@@ -117,23 +117,36 @@
   /* ---------- lista ---------- */
   .lista-section{ background:var(--paper-dim); border-bottom:1px solid var(--line); padding:4.6rem 0 5.6rem; }
   .aviso-breve{ max-width:860px; margin:0 auto 3rem; padding:1rem 1.25rem; border:1px solid var(--line); background:var(--paper); border-radius:6px; font-size:.9rem; line-height:1.6; color:var(--emerald-deep); text-align:center; }
-  .grupo{ max-width:860px; margin:0 auto; }
+  .grupo{ max-width:1040px; margin:0 auto; scroll-margin-top:84px; }
   .grupo + .grupo{ margin-top:4.4rem; }
   .grupo-head{ text-align:center; margin-bottom:1.8rem; }
   .grupo-head h2{ font-size:clamp(1.65rem,3.6vw,2.25rem); font-style:italic; color:var(--ink); }
   .grupo-head p{ margin-top:.6rem; color:var(--stone-deep); font-size:.93rem; line-height:1.6; }
-  .itens{ list-style:none; margin:0; padding:0; background:var(--paper); border:1px solid var(--line); border-radius:6px; }
-  .item{ display:grid; grid-template-columns:48px minmax(0,1fr) auto; gap:1.35rem; align-items:center; padding:1.35rem 1.6rem; }
-  .item + .item{ border-top:1px solid var(--line); }
   .ic svg{ width:48px; height:48px; fill:none; stroke:var(--emerald); stroke-width:1.25; stroke-linecap:round; stroke-linejoin:round; }
-  .item h3{ font-size:1.2rem; color:var(--ink); line-height:1.3; }
-  .item-texto p{ margin-top:.3rem; font-size:.87rem; line-height:1.55; color:var(--stone-deep); }
-  .item-acao{ display:flex; align-items:center; gap:1.35rem; }
-  .item-valor{ font-family:var(--display); font-style:italic; font-size:1.22rem; color:var(--emerald-deep); white-space:nowrap; font-variant-numeric:lining-nums tabular-nums; }
-  @media(max-width:600px){
-    .item{ grid-template-columns:40px minmax(0,1fr); gap:.2rem 1rem; align-items:start; padding:1.25rem 1.15rem; }
-    .item .ic svg{ width:40px; height:40px; }
-    .item-acao{ grid-column:2; justify-content:space-between; margin-top:.8rem; }
+
+  /* cards com foto: 4 colunas no computador, 3 no tablet, 2 no celular */
+  .grade{ list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:1.1rem; }
+  .card{ display:flex; flex-direction:column; min-width:0; background:var(--paper); border:1px solid var(--line); border-radius:6px; overflow:hidden; transition:box-shadow .4s var(--ease), transform .4s var(--ease); }
+  .card:hover{ box-shadow:0 22px 44px -30px rgba(15,32,35,.5); transform:translateY(-2px); }
+  .card-foto{ position:relative; display:block; aspect-ratio:1 / 1; background:#fff; border-bottom:1px solid var(--line); overflow:hidden; }
+  .card-foto.clicavel{ cursor:pointer; }
+  .card-foto img{ display:block; width:100%; height:100%; object-fit:contain; transition:transform .7s var(--ease); }
+  .card:hover .card-foto img{ transform:scale(1.04); }
+  .card-foto .ic{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+  .card-foto .ic svg{ width:64px; height:64px; }
+  .card-corpo{ flex:1; display:flex; flex-direction:column; padding:1rem 1rem 1.1rem; }
+  .card h3{ font-size:1.02rem; line-height:1.32; color:var(--ink); overflow-wrap:anywhere; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+  .card-corpo p{ margin-top:.3rem; font-size:.8rem; line-height:1.5; color:var(--stone-deep); }
+  .card-valor{ margin-top:auto; padding-top:.75rem; font-family:var(--display); font-style:italic; font-size:1.2rem; color:var(--emerald-deep); white-space:nowrap; font-variant-numeric:lining-nums tabular-nums; }
+  .card .btn{ width:100%; margin-top:.8rem; }
+  @media(max-width:900px){ .grade{ grid-template-columns:repeat(3, minmax(0,1fr)); } }
+  @media(max-width:620px){
+    .grade{ grid-template-columns:repeat(2, minmax(0,1fr)); gap:.7rem; }
+    .card:hover{ transform:none; }
+    .card-corpo{ padding:.8rem .75rem .85rem; }
+    .card h3{ font-size:.93rem; -webkit-line-clamp:4; }
+    .card-valor{ font-size:1.06rem; padding-top:.6rem; }
+    .card .btn{ margin-top:.65rem; padding:.78rem .4rem; font-size:.6rem; letter-spacing:.12em; }
   }
 
   .btn{ position:relative; overflow:hidden; display:inline-flex; align-items:center; justify-content:center; font-family:var(--body); font-size:.68rem; letter-spacing:.16em; text-transform:uppercase; font-weight:600; padding:.85rem 1.25rem; border:1px solid var(--ink); background:transparent; color:var(--ink); text-decoration:none; white-space:nowrap; transition:color .35s var(--ease), border-color .35s var(--ease); }
@@ -149,7 +162,7 @@
   .btn[disabled]:hover{ color:var(--ink); }
   .btn.claro[disabled]:hover{ color:var(--paper); }
 
-  .livre{ max-width:860px; margin:4.4rem auto 0; position:relative; overflow:hidden; z-index:0; background:radial-gradient(120% 160% at 0% 0%, var(--ink-2) 0%, var(--ink) 60%, #081517 100%); border-radius:6px; padding:clamp(1.8rem,5vw,2.6rem) clamp(1.4rem,5vw,2.6rem); display:grid; grid-template-columns:48px minmax(0,1fr) auto; gap:1.5rem; align-items:center; color:var(--paper); }
+  .livre{ max-width:1040px; margin:4.4rem auto 0; scroll-margin-top:84px; position:relative; overflow:hidden; z-index:0; background:radial-gradient(120% 160% at 0% 0%, var(--ink-2) 0%, var(--ink) 60%, #081517 100%); border-radius:6px; padding:clamp(1.8rem,5vw,2.6rem) clamp(1.4rem,5vw,2.6rem); display:grid; grid-template-columns:48px minmax(0,1fr) auto; gap:1.5rem; align-items:center; color:var(--paper); }
   .livre .ic svg{ stroke:var(--emerald-light); }
   .livre h2{ font-size:clamp(1.4rem,3vw,1.8rem); font-style:italic; }
   .livre p{ color:#B9C6C0; font-size:.9rem; line-height:1.6; margin-top:.45rem; }
@@ -175,10 +188,13 @@
   .ck-fechar{ position:absolute; top:.8rem; right:.8rem; width:38px; height:38px; display:flex; align-items:center; justify-content:center; border:none; border-radius:50%; background:none; color:var(--stone-deep); }
   .ck-fechar:hover{ background:var(--paper-dim); color:var(--ink); }
   .ck-fechar svg{ width:16px; height:16px; stroke:currentColor; stroke-width:1.4; fill:none; stroke-linecap:round; }
-  .ck-resumo{ display:grid; grid-template-columns:44px minmax(0,1fr); gap:1rem; align-items:center; padding:0 2.4rem 1.3rem 0; margin-bottom:1.7rem; border-bottom:1px solid var(--line); }
+  .ck-resumo{ display:grid; grid-template-columns:72px minmax(0,1fr); gap:1rem; align-items:center; padding:0 2.4rem 1.3rem 0; margin-bottom:1.7rem; border-bottom:1px solid var(--line); }
+  .ck-midia{ width:72px; height:72px; display:flex; align-items:center; justify-content:center; background:#fff; border:1px solid var(--line); border-radius:4px; overflow:hidden; }
+  .ck-midia img{ display:block; width:100%; height:100%; object-fit:contain; }
   .ck-resumo .ic svg{ width:44px; height:44px; }
   .ck-rotulo{ display:block; font-size:.6rem; letter-spacing:.22em; text-transform:uppercase; font-weight:600; color:var(--emerald-deep); }
   .ck-resumo h2{ font-size:1.3rem; color:var(--ink); line-height:1.25; margin-top:.25rem; outline:none; }
+  .ck-resumo h2[tabindex]:focus-visible{ outline:none; } /* o título recebe o foco ao abrir só para o leitor de tela anunciar */
   .ck-valor{ font-family:var(--display); font-style:italic; font-size:1.1rem; color:var(--emerald-deep); margin-top:.15rem; font-variant-numeric:lining-nums tabular-nums; }
 
   .field{ position:relative; margin-bottom:1.55rem; }
@@ -285,7 +301,7 @@
     </svg>
     <span class="eyebrow on-dark surge">Lista de presentes</span>
     <h1 class="surge">Um carinho para o nosso começo</h1>
-    <p class="ph-texto surge">A sua presença já é o nosso maior presente. Se quiser nos presentear, escolhemos alguns itens para a lua de mel e para a casa nova. Cada um vira uma contribuição para nós dois, e você pode pagar com PIX ou cartão.</p>
+    <p class="ph-texto surge">A sua presença já é o nosso maior presente. Se quiser nos presentear, escolhemos itens para a nossa casa. O valor do presente chega direto para nós dois, e você pode pagar com PIX ou cartão.</p>
     <ul class="ph-atalhos surge" id="atalhos" aria-label="Categorias da lista"></ul>
   </div>
 </header>
@@ -328,7 +344,7 @@
     <button type="button" class="ck-fechar" data-fechar aria-label="Fechar"><svg viewBox="0 0 16 16"><path d="M2 2l12 12M14 2 2 14"/></svg></button>
 
     <div class="ck-resumo">
-      <span class="ic" id="ckIcone"></span>
+      <span class="ic ck-midia" id="ckIcone"></span>
       <div>
         <span class="ck-rotulo">Seu presente</span>
         <h2 id="ckTitulo" tabindex="-1"></h2>
@@ -506,25 +522,21 @@
   }
 
   var ICONES = {
-    aviao: '<path transform="rotate(45 24 24)" d="M24 5c1.8 0 2.6 2 2.6 5v9l14.4 8v3l-14.4-4.5V35l4.4 3.5V41L24 39l-7 2v-2.5l4.4-3.5v-9.5L7 30v-3l14.4-8v-9c0-3 .8-5 2.6-5z"/>',
-    hotel: '<path d="M7 13v25M41 24v14M7 31h34M7 25h34M10.5 25c0-4 1.6-5.5 5-5.5s5 1.5 5 5.5"/><path d="M35 7.5a5.2 5.2 0 1 0 5.4 7.4 4.2 4.2 0 1 1-5.4-7.4z"/>',
-    jantar: '<circle cx="24" cy="25" r="10"/><circle cx="24" cy="25" r="6.2"/><path d="M6.5 10v6.5c0 1.3.9 2.3 2 2.3s2-1 2-2.3V10M8.5 10v8.8M8.5 18.8V39"/><path d="M41.5 39V10c-2.4 1.8-3.2 6-3.2 11.5h3.2"/>',
-    barco: '<path d="M8 31h32l-4.5 6.5h-23z"/><path d="M24.5 31V7"/><path d="M24.5 8.5 35 27.5H24.5"/><path d="M22.5 12 13.5 27.5h9"/><path d="M5 42q4.75-2.6 9.5 0t9.5 0 9.5 0 9.5 0"/>',
-    cafe: '<path d="M13 21h20v8.5c0 5-4 8.5-10 8.5s-10-3.5-10-8.5z"/><path d="M33 23.5h1.8a3.7 3.7 0 0 1 0 7.4H32.4"/><path d="M8.5 41.5h29"/><path d="M18.5 16.5c-1.8-1.6 1.8-3.4 0-5.5M23 16.5c-1.8-1.6 1.8-3.4 0-5.5M27.5 16.5c-1.8-1.6 1.8-3.4 0-5.5"/>',
-    drinks: '<g transform="rotate(10 13 35)"><path d="M7 12h12l-6 9z"/><path d="M13 21v14M9.5 35h7"/></g><g transform="rotate(-10 35 35)"><path d="M29 12h12l-6 9z"/><path d="M35 21v14M31.5 35h7"/></g><path d="M24 4v3.2M20.3 5.6l1.6 1.9M27.7 5.6l-1.6 1.9"/>',
-    panela: '<path d="M11 23h26v11.5c0 2.8-2.2 4.5-5 4.5H16c-2.8 0-5-1.7-5-4.5z"/><path d="M11 26.5H6.5M37 26.5h4.5"/><path d="M9.5 20.5h29"/><path d="M12 20.5c1-4.5 6-6.5 12-6.5s11 2 12 6.5"/><path d="M22 14v-2h4v2"/>',
-    airfryer: '<path d="M15 8h18a5 5 0 0 1 5 5v24.5a3.5 3.5 0 0 1-3.5 3.5h-21A3.5 3.5 0 0 1 10 37.5V13a5 5 0 0 1 5-5z"/><circle cx="24" cy="15.5" r="3"/><path d="M13.5 23h21v12.5h-21z"/><path d="M20 28.5h8"/>',
-    cafeteira: '<path d="M11 8h26v32H11z"/><path d="M11 16h26"/><circle cx="16" cy="12" r="1.3"/><circle cx="21" cy="12" r="1.3"/><circle cx="31" cy="12" r="2"/><path d="M18 16v4h12v-4M24 20v3"/><path d="M19 28h10v3.5c0 2.2-2 3.5-5 3.5s-5-1.3-5-3.5z"/><path d="M29 29.5h1a1.8 1.8 0 0 1 0 3.6h-1.3"/><path d="M14.5 38h19"/>',
-    toalhas: '<path d="M9 33.5h30a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2z"/><path d="M11 26.5h26a2 2 0 0 1 2 2v5H9v-5a2 2 0 0 1 2-2z"/><path d="M13 19.5h22a2 2 0 0 1 2 2v5H11v-5a2 2 0 0 1 2-2z"/><path d="M32 33.5v7M31 26.5v7M29.5 19.5v7"/><path d="M24 19.5c0-3 1.8-5.2 4.8-6-.3 3.1-2 5.2-4.8 6zM24 19.5c0-3-1.8-5.2-4.8-6 .3 3.1 2 5.2 4.8 6z"/>',
-    bule: '<path d="M13 24c0-5.5 4.5-9 11-9s11 3.5 11 9v3c0 6-4.5 10-11 10s-11-4-11-10z"/><path d="M18 15.5c.6-2.6 3-4 6-4s5.4 1.4 6 4"/><circle cx="24" cy="9.5" r="1.5"/><path d="M13.1 25.5C10 25 8 21.5 6.2 17.2M13.6 31.2C10.2 30.3 7.6 25 6.2 17.2"/><path d="M35 20.5c4 0 6.5 2.3 6.5 5.5s-2.5 5.5-6.5 5.5"/><path d="M18 37l-1 3h14l-1-3"/>',
-    sofa: '<path d="M9 22v-4c0-2.5 2-4 4.5-4h21c2.5 0 4.5 1.5 4.5 4v4"/><path d="M5 36V26c0-2.5 1.6-4 4-4s4 1.5 4 4v3h22v-3c0-2.5 1.6-4 4-4s4 1.5 4 4v10z"/><path d="M13 29v7M35 29v7"/><path d="M9 36v4M39 36v4"/>',
-    pizza: '<path d="M8.5 12.5C18 7 30 7 39.5 12.5L24 42z"/><path d="M11.5 17.5c8-4 17-4 25 0"/><circle cx="19.5" cy="22" r="2.2"/><circle cx="28.5" cy="23" r="2"/><circle cx="24" cy="31" r="1.9"/>',
-    pipoca: '<path d="M13 20h22l-3 22H16z"/><path d="M19.5 20l1.2 22M24 20v22M28.5 20l-1.2 22"/><path d="M13 20c-1.8-3.2.6-6.3 3.6-5.6.4-3.4 4.1-4.8 6.6-2.6 1.4-2.9 5.9-3 7 .4 2.9-1 5.9 1.4 4.8 4.4 1.4.8 1.2 2.7 0 3.4"/>',
-    churrasqueira: '<path d="M8.5 20h31c0 7.5-6.9 13-15.5 13S8.5 27.5 8.5 20z"/><path d="M8.5 20H5.5M39.5 20h3"/><path d="M17 31.5 12.5 42M31 31.5 35.5 42M24 33v9"/><path d="M19 15c-1.8-1.6 1.8-3.4 0-5.5M24 15c-1.8-1.6 1.8-3.4 0-5.5M29 15c-1.8-1.6 1.8-3.4 0-5.5"/>',
-    planta: '<path d="M14 27h20v3.5H14z"/><path d="M15.5 30.5h17L30.5 42h-13z"/><path d="M24 27V8"/><path d="M24 21c-5-.6-8.6-3.6-9.6-8.8 5 .8 8.2 3.6 9.6 8.8zM24 16.5c4.8-.8 8-3.8 8.8-8.8-4.8.9-7.8 3.8-8.8 8.8zM24 24c3.8-.5 6.6-2.6 7.6-6-3.6.5-6.2 2.6-7.6 6z"/>',
     presente: '<path d="M10 22h28v18H10z"/><path d="M8 16h32v6H8z"/><path d="M24 16v24"/><path d="M24 16c-2.6-4.6-8.5-6-8.8-2.6-.3 2.9 4.6 2.6 8.8 2.6zM24 16c2.6-4.6 8.5-6 8.8-2.6.3 2.9-4.6 2.6-8.8 2.6z"/>'
   };
   function icone(nome){ return '<svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">' + (ICONES[nome] || ICONES.presente) + '</svg>'; }
+  // Só aceita caminho relativo (images/...) ou https, para nenhum texto da lista virar outra coisa na página.
+  function fotoSegura(f){ f = String(f || '').trim(); return /^(https:\/\/|[\w.-]+\/)[^\s"'<>]*$/.test(f) && !/^\w+:(?!\/\/)/.test(f) ? f : ''; }
+  function midia(foto, carregarDepois){
+    var f = fotoSegura(foto);
+    if (!f) return icone('presente');
+    return '<img src="' + esc(f) + '" alt="" width="600" height="600" decoding="async"' + (carregarDepois ? ' loading="lazy"' : '') + '>';
+  }
+  function mostrarMidiaCheckout(foto){
+    var el = $('ckIcone'), f = fotoSegura(foto);
+    el.innerHTML = midia(f, false);
+    el.classList.toggle('ic', !f);
+  }
 
   function cpfValido(v){
     var d = digitos(v);
@@ -607,7 +619,7 @@
       if (!doGrupo.length) return;
       html += '<section class="grupo" id="' + esc(c.id) + '" aria-labelledby="g-' + esc(c.id) + '">' +
         '<header class="grupo-head"><h2 id="g-' + esc(c.id) + '">' + esc(c.nome) + '</h2>' + (c.descricao ? '<p>' + esc(c.descricao) + '</p>' : '') + '</header>' +
-        '<ul class="itens">' + doGrupo.map(function(p){ return itemHTML(p, pronto); }).join('') + '</ul></section>';
+        '<ul class="grade">' + doGrupo.map(function(p){ return itemHTML(p, pronto); }).join('') + '</ul></section>';
       atalhos += '<li><a href="#' + esc(c.id) + '">' + esc(c.nome) + '</a></li>';
     });
     $('grupos').innerHTML = html;
@@ -634,17 +646,24 @@
   }
 
   function itemHTML(p, pronto){
-    var valor = brl(centavos(p.valor));
-    return '<li class="item">' +
-      '<span class="ic">' + icone(p.icone) + '</span>' +
-      '<div class="item-texto"><h3>' + esc(p.nome) + '</h3>' + (p.descricao ? '<p>' + esc(p.descricao) + '</p>' : '') + '</div>' +
-      '<div class="item-acao"><span class="item-valor">' + valor + '</span>' +
+    var valor = brl(centavos(p.valor)), temFoto = !!fotoSegura(p.foto);
+    // A foto também abre o checkout (no celular a pessoa toca na imagem), mas fica fora da ordem do teclado: o botão já faz isso.
+    return '<li class="card">' +
+      '<div class="card-foto' + (pronto ? ' clicavel" data-foto-de="' + esc(p.id) : '') + '"' + (temFoto ? '' : ' aria-hidden="true"') + '>' +
+        (temFoto ? midia(p.foto, true) : '<span class="ic">' + icone('presente') + '</span>') + '</div>' +
+      '<div class="card-corpo"><h3>' + esc(p.nome) + '</h3>' + (p.descricao ? '<p>' + esc(p.descricao) + '</p>' : '') +
+      '<span class="card-valor">' + valor + '</span>' +
       '<button type="button" class="btn" data-presente="' + esc(p.id) + '"' + (pronto ? '' : ' disabled') + ' aria-label="' + esc((pronto ? 'Presentear: ' : 'Em breve: ') + p.nome + ', ' + valor) + '"><span>' + (pronto ? 'Presentear' : 'Em breve') + '</span></button>' +
       '</div></li>';
   }
 
   document.addEventListener('click', function(e){
-    var b = e.target.closest ? e.target.closest('[data-presente]') : null;
+    if (!e.target.closest) return;
+    var b = e.target.closest('[data-presente]');
+    if (!b) {
+      var foto = e.target.closest('[data-foto-de]');
+      if (foto) b = foto.parentNode.querySelector('button[data-presente]');
+    }
     if (b && !b.disabled) abrirCheckout(b.getAttribute('data-presente'), b);
   });
 
@@ -676,14 +695,14 @@
 
   function abrirCheckout(id, gatilho){
     var livre = id === 'valor-livre';
-    var p = livre ? { id: 'valor-livre', nome: 'Presente com valor livre', icone: 'presente' } : estado.presentes[id];
+    var p = livre ? { id: 'valor-livre', nome: 'Presente com valor livre' } : estado.presentes[id];
     if (!p) return;
-    estado.atual = { id: p.id, nome: p.nome, icone: p.icone, livre: livre, valor: livre ? null : centavos(p.valor), somentePix: p.somentePix === true };
+    estado.atual = { id: p.id, nome: p.nome, foto: fotoSegura(p.foto), livre: livre, valor: livre ? null : centavos(p.valor), somentePix: p.somentePix === true };
     estado.gatilho = gatilho || null;
     estado.pedido = null;
     pararPoll();
 
-    $('ckIcone').innerHTML = icone(p.icone);
+    mostrarMidiaCheckout(estado.atual.foto);
     $('ckTitulo').textContent = p.nome;
     $('ckLivre').hidden = !livre;
     if (livre) montarSugestoes();
@@ -1085,7 +1104,7 @@
     if (!estado.pedido || !codigo) return;
     guardar.gravar(CHAVE_PENDENTE, {
       id: estado.pedido.id, codigo: codigo, valor: estado.pedido.valor, em: Date.now(), nome: ultimoNome,
-      presente: { id: estado.atual.id, nome: estado.atual.nome, icone: estado.atual.icone }
+      presente: { id: estado.atual.id, nome: estado.atual.nome, foto: estado.atual.foto || '' }
     });
   }
   function apagarPendente(){ guardar.apagar(CHAVE_PENDENTE); $('pixPendente').hidden = true; }
@@ -1116,10 +1135,13 @@
     var p = lerPendente();
     if (!p) { apagarPendente(); return; }
     $('pixPendente').hidden = true;
-    estado.atual = { id: p.presente.id, nome: p.presente.nome, icone: p.presente.icone, livre: p.presente.id === 'valor-livre', valor: p.valor, somentePix: true };
+    // PIX salvo antes desta versão não tem foto: usa a do catálogo atual, se o presente ainda existir.
+    var doCatalogo = estado.presentes[p.presente.id];
+    var foto = fotoSegura(p.presente.foto) || (doCatalogo ? fotoSegura(doCatalogo.foto) : '');
+    estado.atual = { id: p.presente.id, nome: p.presente.nome, foto: foto, livre: p.presente.id === 'valor-livre', valor: p.valor, somentePix: true };
     estado.gatilho = $('pixPendenteVer');
     ultimoNome = p.nome || ultimoNome;
-    $('ckIcone').innerHTML = icone(p.presente.icone);
+    mostrarMidiaCheckout(foto);
     $('ckTitulo').textContent = p.presente.nome;
     $('ckValor').textContent = brl(p.valor);
     estado.pedido = { id: p.id, metodo: 'pix', valor: p.valor };
