@@ -283,9 +283,11 @@
     .historia-chapter .h-spacer{ display:none; }
     .historia-chapter .h-content.left,
     .historia-chapter .h-content.right{
-      grid-column:2; text-align:left; padding:0 0 0 .25rem;
+      grid-column:2; grid-row:1; text-align:left; padding:0 0 0 .25rem;
     }
-    .historia-chapter .h-rail{ grid-column:1; }
+    /* grid-row:1 mantém a bolinha na mesma linha do texto; sem isso, nos capítulos
+       da esquerda ela caía para baixo do texto */
+    .historia-chapter .h-rail{ grid-column:1; grid-row:1; }
 
     .historia-chapter.center{
       grid-template-columns:2.4rem 1fr;
@@ -411,12 +413,34 @@
   .pill-row{ display:flex; flex-wrap:wrap; gap:.75rem; margin-bottom:1.8rem; }
   .pill{ flex:1 1 130px; min-width:0; text-align:center; padding:.8rem .6rem; border:1px solid var(--line); background:transparent; font-size:.83rem; color:var(--charcoal); transition:background .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease); }
   .pill.selected{ background:var(--ink); border-color:var(--ink); color:var(--paper); }
-  .guests-field{ display:flex; flex-wrap:wrap; gap:.6rem; align-items:center; justify-content:space-between; border:1px solid var(--line); padding:.75rem 1.1rem; margin-bottom:1.8rem; max-height:500px; overflow:hidden; transition:max-height .45s var(--ease), opacity .35s var(--ease), margin .45s var(--ease), padding .45s var(--ease), border-color .45s var(--ease); }
-  .guests-field.hidden{ max-height:0; opacity:0; margin:0; padding:0 1.1rem; border-color:transparent; pointer-events:none; }
-  .stepper{ display:flex; align-items:center; gap:1.1rem; }
-  .stepper button{ width:28px; height:28px; border-radius:50%; border:1px solid var(--line); background:transparent; color:var(--emerald-deep); font-size:1rem; line-height:1; display:flex; align-items:center; justify-content:center; transition:background .25s var(--ease), color .25s var(--ease); flex-shrink:0; }
-  .stepper button:hover{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
-  .stepper .count{ font-family:var(--display); font-size:1.15rem; min-width:1.4rem; text-align:center; }
+  /* busca na lista de convidados */
+  [hidden]{ display:none !important; }
+  .busca-caixa{ position:relative; }
+  .ajuda{ display:block; margin-top:.45rem; font-size:.74rem; line-height:1.45; color:#5F6E68; }
+  .sugestoes{ position:absolute; left:0; right:0; top:100%; z-index:20; margin:.35rem 0 0; padding:.35rem 0; list-style:none; background:var(--paper); border:1px solid var(--line); box-shadow:0 18px 40px -18px rgba(8,21,23,.45); max-height:15.5rem; overflow-y:auto; }
+  .sugestoes li{ display:flex; justify-content:space-between; align-items:center; gap:.8rem; padding:.7rem 1rem; font-size:.95rem; line-height:1.35; color:var(--charcoal); cursor:pointer; }
+  .sugestoes li[aria-selected="true"], .sugestoes li:hover{ background:rgba(47,117,102,.10); }
+  .sugestoes li.vazio{ cursor:default; color:#5F6E68; font-size:.85rem; line-height:1.5; }
+  .sugestoes li.vazio:hover{ background:none; }
+  .sugestoes .tag{ flex-shrink:0; font-size:.6rem; letter-spacing:.14em; text-transform:uppercase; font-weight:600; color:var(--emerald-deep); }
+  .escolhido{ margin-bottom:1.8rem; padding:.95rem 1.1rem 1.05rem; border:1px solid var(--line); background:rgba(47,117,102,.06); }
+  .escolhido .group-label{ margin-bottom:.3rem; }
+  .escolhido-linha{ display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+  .escolhido strong{ font-family:var(--display); font-weight:400; font-size:1.2rem; line-height:1.3; color:var(--ink); min-width:0; overflow-wrap:break-word; }
+  .link-mini{ flex-shrink:0; background:none; border:none; border-bottom:1px solid var(--line); padding:0 0 2px; font-size:.64rem; letter-spacing:.16em; text-transform:uppercase; font-weight:600; color:var(--emerald-deep); }
+  .acomp{ margin-bottom:1.8rem; padding:1.05rem 1.1rem .3rem; border:1px solid var(--line); }
+  .acomp .field{ margin-bottom:1.1rem; }
+  .chips{ list-style:none; margin:0 0 1.1rem; padding:0; display:flex; flex-wrap:wrap; gap:.5rem; }
+  .chips:empty{ display:none; }
+  .chips li{ display:inline-flex; align-items:center; gap:.45rem; max-width:100%; padding:.42rem .45rem .42rem .85rem; background:var(--ink); color:var(--paper); font-size:.82rem; line-height:1.3; border-radius:999px; }
+  .chips li span{ min-width:0; overflow-wrap:anywhere; }
+  .chips button{ flex-shrink:0; width:22px; height:22px; border-radius:50%; border:none; background:rgba(244,245,241,.14); color:var(--paper); display:flex; align-items:center; justify-content:center; padding:0; }
+  .chips button:hover{ background:rgba(244,245,241,.3); }
+  .chips svg{ width:9px; height:9px; stroke:currentColor; stroke-width:1.6; fill:none; stroke-linecap:round; }
+  .rsvp-erro{ border:1px solid rgba(162,59,42,.35); background:rgba(162,59,42,.06); color:#7A2C20; font-size:.86rem; line-height:1.5; padding:.85rem 1rem; margin-bottom:1.2rem; }
+  .rsvp-hp{ position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
+  .submit-btn[disabled]{ cursor:progress; }
+  .submit-btn[disabled]::before{ transform:scaleX(1); }
   .submit-btn{ width:100%; background:var(--ink); color:var(--paper); border:1px solid var(--ink); padding:1.05rem 1.25rem; font-size:.74rem; letter-spacing:.16em; text-transform:uppercase; font-weight:600; position:relative; overflow:hidden; transition:color .4s var(--ease), border-color .4s var(--ease); }
   .submit-btn::before{ content:""; position:absolute; inset:0; background:var(--emerald); transform:scaleX(0); transform-origin:left; transition:transform .5s var(--ease-slow); z-index:0; }
   .submit-btn span{ position:relative; z-index:1; }
@@ -696,9 +720,20 @@
   </div>
   <div class="rsvp-card reveal">
     <form id="rsvpForm" novalidate>
-      <div class="field">
-        <input type="text" id="guestName" placeholder=" " required>
-        <label for="guestName">Nome completo</label>
+      <div class="field" id="campoNome">
+        <div class="busca-caixa">
+          <input type="text" id="guestName" placeholder=" " autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="listaNome" aria-describedby="ajudaNome">
+          <label for="guestName">Seu nome</label>
+          <ul class="sugestoes" id="listaNome" role="listbox" aria-label="Convidados encontrados" hidden></ul>
+        </div>
+        <small class="ajuda" id="ajudaNome">Comece a digitar seu nome e escolha na lista que aparece.</small>
+      </div>
+      <div class="escolhido" id="escolhido" hidden>
+        <span class="group-label">Confirmando como</span>
+        <div class="escolhido-linha">
+          <strong id="escolhidoNome"></strong>
+          <button type="button" class="link-mini" id="trocarNome">Trocar</button>
+        </div>
       </div>
       <div class="field">
         <input type="email" id="guestEmail" placeholder=" ">
@@ -709,12 +744,16 @@
         <button type="button" class="pill" data-value="sim">Sim, com certeza</button>
         <button type="button" class="pill" data-value="nao">Não poderei ir</button>
       </div>
-      <div class="guests-field hidden" id="guestsField">
-        <span class="group-label" style="margin-bottom:0;">Acompanhantes</span>
-        <div class="stepper">
-          <button type="button" id="minusGuest" aria-label="Diminuir">−</button>
-          <span class="count" id="guestCount">0</span>
-          <button type="button" id="plusGuest" aria-label="Aumentar">+</button>
+      <div class="acomp" id="guestsField" hidden>
+        <span class="group-label">Quem vai com você?</span>
+        <ul class="chips" id="chipsAcomp" aria-live="polite"></ul>
+        <div class="field" id="campoAcomp">
+          <div class="busca-caixa">
+            <input type="text" id="buscaAcomp" placeholder=" " autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="listaAcomp" aria-describedby="ajudaAcomp">
+            <label for="buscaAcomp">Adicionar acompanhante</label>
+            <ul class="sugestoes" id="listaAcomp" role="listbox" aria-label="Convidados encontrados" hidden></ul>
+          </div>
+          <small class="ajuda" id="ajudaAcomp">Só pessoas da lista de convidados. Vai sem acompanhante? Deixe em branco.</small>
         </div>
       </div>
       <div class="field">
@@ -725,7 +764,9 @@
         <textarea id="message" rows="2" placeholder=" "></textarea>
         <label for="message">Deixe uma mensagem para o casal (opcional)</label>
       </div>
-      <button type="submit" class="submit-btn"><span>Confirmar presença</span></button>
+      <div class="rsvp-hp" aria-hidden="true"><label for="rsvpApelido">Não preencha</label><input type="text" id="rsvpApelido" tabindex="-1" autocomplete="off"></div>
+      <div class="rsvp-erro" id="rsvpErro" role="alert" hidden></div>
+      <button type="submit" class="submit-btn" id="rsvpEnviar"><span id="rsvpEnviarTexto">Confirmar presença</span></button>
     </form>
     <div class="thanks" id="thanksPanel">
       <svg class="check-wrap" viewBox="0 0 64 64">
@@ -925,56 +966,218 @@
   tick();
   setInterval(tick, 1000);
 
+  /* ===== Confirmação de presença: só nomes da lista de convidados ===== */
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]; }); }
+  var MAX_ACOMP = 6;
+  var form = $('rsvpForm');
+  var thanksPanel = $('thanksPanel'), thanksTitle = $('thanksTitle'), thanksText = $('thanksText');
   var pills = document.querySelectorAll('#attendPills .pill');
-  var guestsField = document.getElementById('guestsField');
+  var guestsField = $('guestsField');
   var attendValue = null;
+  var escolhido = null;      // { id, nome }
+  var acompanhantes = [];    // [{ id, nome, crianca }]
+
+  function mostrarErro(texto){ $('rsvpErro').textContent = texto || ''; $('rsvpErro').hidden = !texto; }
+
+  function normalizar(s){ return String(s == null ? '' : s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim(); }
+  // Cada palavra digitada precisa ser começo de uma palavra do nome ("mat nev" → Matheus Neves).
+  function bate(nome, q){
+    var termos = normalizar(nome).split(' ');
+    return normalizar(q).split(' ').filter(Boolean).every(function(w){ return termos.some(function(t){ return t.indexOf(w) === 0; }); });
+  }
+
+  // Campo com busca na lista: a lista aparece embaixo e vai filtrando a cada letra (padrão combobox).
+  function criarBusca(op){
+    var input = op.input, lista = op.lista;
+    var resultados = [], ativo = -1, espera = null, seq = 0;
+    var ultimaBusca = '', ultimosAchados = [];
+    function fechar(){ lista.hidden = true; input.setAttribute('aria-expanded', 'false'); input.removeAttribute('aria-activedescendant'); ativo = -1; }
+    function mostrar(itens, aviso){
+      lista.innerHTML = aviso
+        ? '<li class="vazio">' + esc(aviso) + '</li>'
+        : itens.map(function(p, i){ return '<li role="option" id="' + lista.id + '-' + i + '" data-i="' + i + '" aria-selected="false"><span>' + esc(p.nome) + '</span>' + (p.crianca ? '<span class="tag">criança</span>' : '') + '</li>'; }).join('');
+      lista.hidden = false;
+      input.setAttribute('aria-expanded', 'true');
+    }
+    function marcar(i){
+      var itens = lista.querySelectorAll('li[data-i]');
+      if (!itens.length) return;
+      ativo = Math.max(0, Math.min(i, itens.length - 1));
+      itens.forEach(function(li, j){ li.setAttribute('aria-selected', j === ativo ? 'true' : 'false'); });
+      input.setAttribute('aria-activedescendant', itens[ativo].id);
+      itens[ativo].scrollIntoView({ block: 'nearest' });
+    }
+    function curta(q){ return normalizar(q).replace(/ /g, '').length < 2; }
+    function exibir(achados, provisorio){
+      var fora = op.excluir();
+      resultados = achados.filter(function(p){ return fora.indexOf(p.id) < 0; });
+      if (resultados.length) { mostrar(resultados); marcar(0); }
+      else if (provisorio) mostrar([], 'Buscando…');
+      else mostrar([], achados.length ? 'Essa pessoa já está na sua confirmação.' : 'Não encontramos esse nome na lista. Confira como está escrito no convite.');
+    }
+    function consultar(){
+      var q = input.value.trim();
+      if (curta(q)) { resultados = []; fechar(); return; }
+      var meu = ++seq;
+      fetch('api/convidados?q=' + encodeURIComponent(q), { cache: 'no-store' })
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+          if (meu !== seq) return;
+          if (!d || !d.ok) { resultados = []; mostrar([], (d && d.mensagem) || 'Não foi possível buscar agora. Tente de novo.'); return; }
+          ultimaBusca = q;
+          ultimosAchados = d.resultados;
+          exibir(d.resultados, false);
+        })
+        .catch(function(){ if (meu === seq) { resultados = []; mostrar([], 'Sem conexão. Confira sua internet e tente de novo.'); } });
+    }
+    function escolher(i){ var p = resultados[i]; if (!p) return; fechar(); op.aoEscolher(p); }
+    input.addEventListener('input', function(){
+      var q = input.value.trim();
+      clearTimeout(espera);
+      if (curta(q)) { seq++; resultados = []; fechar(); return; }
+      // Filtra na hora o que já veio, enquanto a busca nova chega.
+      if (ultimaBusca && normalizar(q).indexOf(normalizar(ultimaBusca)) === 0) {
+        exibir(ultimosAchados.filter(function(p){ return bate(p.nome, q); }), true);
+      } else if (!lista.hidden) {
+        mostrar([], 'Buscando…');
+      }
+      espera = setTimeout(consultar, 150);
+    });
+    input.addEventListener('keydown', function(e){
+      if (e.key === 'ArrowDown') { e.preventDefault(); if (lista.hidden) consultar(); else marcar(ativo + 1); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); marcar(ativo - 1); }
+      else if (e.key === 'Enter' && !lista.hidden) { e.preventDefault(); escolher(ativo); }
+      else if (e.key === 'Escape') fechar();
+    });
+    lista.addEventListener('mousedown', function(e){ e.preventDefault(); });
+    lista.addEventListener('click', function(e){ var li = e.target.closest('li[data-i]'); if (li) escolher(Number(li.getAttribute('data-i'))); });
+    input.addEventListener('blur', function(){ setTimeout(fechar, 150); });
+    return { limpar: function(){ clearTimeout(espera); seq++; input.value = ''; resultados = []; ultimaBusca = ''; ultimosAchados = []; fechar(); } };
+  }
+
+  var buscaNome = criarBusca({
+    input: $('guestName'), lista: $('listaNome'),
+    excluir: function(){ return []; },
+    aoEscolher: function(p){
+      escolhido = p;
+      $('escolhidoNome').textContent = p.nome;
+      $('escolhido').hidden = false;
+      $('campoNome').hidden = true;
+      acompanhantes = acompanhantes.filter(function(a){ return a.id !== p.id; });
+      desenharAcompanhantes();
+      mostrarErro('');
+    }
+  });
+  $('trocarNome').addEventListener('click', function(){
+    escolhido = null;
+    $('escolhido').hidden = true;
+    $('campoNome').hidden = false;
+    buscaNome.limpar();
+    $('guestName').focus();
+  });
+
+  var buscaAcomp = criarBusca({
+    input: $('buscaAcomp'), lista: $('listaAcomp'),
+    excluir: function(){ return acompanhantes.map(function(a){ return a.id; }).concat(escolhido ? [escolhido.id] : []); },
+    aoEscolher: function(p){
+      if (acompanhantes.length < MAX_ACOMP) acompanhantes.push(p);
+      buscaAcomp.limpar();
+      desenharAcompanhantes();
+      if (!$('campoAcomp').hidden) $('buscaAcomp').focus();
+    }
+  });
+  function desenharAcompanhantes(){
+    $('chipsAcomp').innerHTML = acompanhantes.map(function(a, i){
+      return '<li><span>' + esc(a.nome) + '</span><button type="button" data-remover="' + i + '" aria-label="Remover ' + esc(a.nome) + '"><svg viewBox="0 0 10 10"><path d="M1.5 1.5l7 7M8.5 1.5l-7 7"/></svg></button></li>';
+    }).join('');
+    $('campoAcomp').hidden = acompanhantes.length >= MAX_ACOMP;
+  }
+  $('chipsAcomp').addEventListener('click', function(e){
+    var b = e.target.closest('[data-remover]');
+    if (!b) return;
+    acompanhantes.splice(Number(b.getAttribute('data-remover')), 1);
+    desenharAcompanhantes();
+    $('buscaAcomp').focus();
+  });
+
   pills.forEach(function(pill){
     pill.addEventListener('click', function(){
       pills.forEach(function(p){ p.classList.remove('selected'); });
       pill.classList.add('selected');
       attendValue = pill.getAttribute('data-value');
-      if(attendValue === 'sim'){ guestsField.classList.remove('hidden'); }
-      else { guestsField.classList.add('hidden'); guestCount = 0; countEl.textContent = guestCount; }
+      guestsField.hidden = attendValue !== 'sim';
+      $('rsvpEnviarTexto').textContent = attendValue === 'nao' ? 'Enviar resposta' : 'Confirmar presença';
+      mostrarErro('');
     });
   });
 
-  var guestCount = 0;
-  var countEl = document.getElementById('guestCount');
-  document.getElementById('plusGuest').addEventListener('click', function(){ if(guestCount < 6){ guestCount++; countEl.textContent = guestCount; } });
-  document.getElementById('minusGuest').addEventListener('click', function(){ if(guestCount > 0){ guestCount--; countEl.textContent = guestCount; } });
+  function juntar(nomes){
+    if (nomes.length <= 1) return nomes.join('');
+    return nomes.slice(0, -1).join(', ') + ' e ' + nomes[nomes.length - 1];
+  }
 
-  var RSVP_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwV6qSx2ZkaSkOMI0qB-uKXD7_g_Rygag3Dh-7OhOCU0agx7BO5p1Bhc6cjH8AeC3kHmA/exec';
-  var form = document.getElementById('rsvpForm');
-  var thanksPanel = document.getElementById('thanksPanel');
-  var thanksTitle = document.getElementById('thanksTitle');
-  var thanksText = document.getElementById('thanksText');
-
+  var enviando = false;
   form.addEventListener('submit', function(e){
     e.preventDefault();
-    var name = document.getElementById('guestName').value.trim();
-    if(!name){ document.getElementById('guestName').focus(); return; }
-    if(!attendValue){ document.getElementById('attendPills').scrollIntoView({behavior:'smooth', block:'center'}); return; }
-    var payload = { nome: name, email: document.getElementById('guestEmail').value.trim(), vai: attendValue === 'sim' ? 'Sim' : 'Não', acompanhantes: guestCount, restricao: document.getElementById('dietary').value.trim(), mensagem: document.getElementById('message').value.trim() };
-    fetch(RSVP_ENDPOINT, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(payload) }).catch(function(err){ console.error('Falha ao enviar RSVP:', err); });
-    var firstName = name.split(' ')[0];
-    if(attendValue === 'sim'){
-      thanksTitle.textContent = 'Obrigado, ' + firstName + '!';
-      thanksText.textContent = 'Sua presença foi confirmada com alegria. Mal podemos esperar para celebrar esse dia com você' + (guestCount>0 ? ' e sua companhia' : '') + '.';
-    } else {
-      thanksTitle.textContent = 'Sentiremos sua falta, ' + firstName;
-      thanksText.textContent = 'Obrigado por nos avisar. Você estará em nossos pensamentos nesse dia especial.';
-    }
-    form.classList.add('submitting');
-    setTimeout(function(){ thanksPanel.classList.add('show'); }, 350);
+    if (enviando) return;
+    mostrarErro('');
+    if (!escolhido) { mostrarErro('Busque e escolha seu nome na lista de convidados.'); $('guestName').focus(); return; }
+    if (!attendValue) { mostrarErro('Diga se vai comparecer.'); $('attendPills').scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+    var email = $('guestEmail').value.trim();
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { mostrarErro('Confira o e-mail.'); $('guestEmail').focus(); return; }
+    var corpo = {
+      convidado: escolhido.id,
+      vai: attendValue,
+      acompanhantes: attendValue === 'sim' ? acompanhantes.map(function(a){ return a.id; }) : [],
+      email: email,
+      restricao: $('dietary').value.trim(),
+      mensagem: $('message').value.trim(),
+      hp: $('rsvpApelido').value
+    };
+    enviando = true;
+    $('rsvpEnviar').disabled = true;
+    $('rsvpEnviarTexto').textContent = 'Enviando…';
+    fetch('api/presenca', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(corpo) })
+      .then(function(r){ return r.json().catch(function(){ return null; }); })
+      .catch(function(){ return null; })
+      .then(function(d){
+        enviando = false;
+        $('rsvpEnviar').disabled = false;
+        $('rsvpEnviarTexto').textContent = attendValue === 'nao' ? 'Enviar resposta' : 'Confirmar presença';
+        if (!d) { mostrarErro('Sem conexão com o servidor. Confira sua internet e tente de novo.'); return; }
+        if (!d.ok) { mostrarErro(d.mensagem || 'Não foi possível enviar. Tente de novo.'); return; }
+        var primeiro = function(n){ return String(n).split(' ')[0]; };
+        if (d.vai === 'sim') {
+          thanksTitle.textContent = 'Obrigado, ' + primeiro(d.nome) + '!';
+          thanksText.textContent = 'Sua presença foi confirmada com alegria. Mal podemos esperar para celebrar esse dia com você' +
+            (d.acompanhantes && d.acompanhantes.length ? ', ' + juntar(d.acompanhantes.map(primeiro)) : '') + '.';
+        } else {
+          thanksTitle.textContent = 'Sentiremos sua falta, ' + primeiro(d.nome);
+          thanksText.textContent = 'Obrigado por nos avisar. Você estará em nossos pensamentos nesse dia especial.';
+        }
+        form.classList.add('submitting');
+        setTimeout(function(){ thanksPanel.classList.add('show'); }, 350);
+      });
   });
 
-  document.getElementById('resetForm').addEventListener('click', function(){
+  $('resetForm').addEventListener('click', function(){
     thanksPanel.classList.remove('show');
     setTimeout(function(){
-      form.reset(); form.classList.remove('submitting');
+      form.reset();
+      form.classList.remove('submitting');
       pills.forEach(function(p){ p.classList.remove('selected'); });
-      attendValue = null; guestCount = 0; countEl.textContent = 0;
-      guestsField.classList.add('hidden');
+      attendValue = null;
+      escolhido = null;
+      acompanhantes = [];
+      desenharAcompanhantes();
+      buscaNome.limpar();
+      buscaAcomp.limpar();
+      $('escolhido').hidden = true;
+      $('campoNome').hidden = false;
+      guestsField.hidden = true;
+      $('rsvpEnviarTexto').textContent = 'Confirmar presença';
+      mostrarErro('');
     }, 400);
   });
 })();
