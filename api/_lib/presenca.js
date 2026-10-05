@@ -1,7 +1,7 @@
 'use strict';
 
 /*
- * Lista de convidados e confirmações, via Apps Script da planilha.
+ * Lista de convidados, confirmações e recados do mural, via Apps Script da planilha.
  * A lista inteira só circula entre a Vercel e o Google (protegida pela chave);
  * a página recebe apenas os nomes que batem com o que a pessoa digitou.
  */
@@ -9,6 +9,7 @@
 const URL_PADRAO = 'https://script.google.com/macros/s/AKfycbwV6qSx2ZkaSkOMI0qB-uKXD7_g_Rygag3Dh-7OhOCU0agx7BO5p1Bhc6cjH8AeC3kHmA/exec';
 const VALIDADE_CACHE = 5 * 60 * 1000;
 let cache = { em: 0, lista: null };
+let cacheRecados = { em: 0, lista: null };
 
 const url = () => String(process.env.PRESENCA_URL || URL_PADRAO).trim();
 const chave = () => String(process.env.PRESENCA_CHAVE || '').trim();
@@ -86,10 +87,31 @@ function buscar(l, consulta, maximo) {
   return achados.slice(0, maximo).map((x) => x.p);
 }
 
+/* Recados do mural (só os marcados "Sim" na coluna Mural da planilha), com cache de 5 min. */
+async function recados() {
+  if (cacheRecados.lista && Date.now() - cacheRecados.em < VALIDADE_CACHE) return cacheRecados.lista;
+  try {
+    const u = new URL(url());
+    u.searchParams.set('acao', 'recados');
+    u.searchParams.set('chave', chave());
+    const d = await chamar({ url: u });
+    if (!d.ok || !Array.isArray(d.recados)) throw new ErroPlanilha(d.erro || 'resposta_invalida');
+    const l = d.recados
+      .filter((x) => x && x.nome && x.mensagem)
+      .map((x) => ({ nome: String(x.nome).trim(), mensagem: String(x.mensagem).trim(), em: Date.parse(x.em) || 0 }));
+    cacheRecados = { em: Date.now(), lista: l };
+    return l;
+  } catch (e) {
+    if (cacheRecados.lista) return cacheRecados.lista;
+    throw e;
+  }
+}
+
 async function confirmar(dados) {
   const d = await chamar({ url: url(), metodo: 'POST', corpo: Object.assign({ chave: chave(), acao: 'confirmar' }, dados), timeoutMs: 25000 });
   cache.em = Math.min(cache.em, Date.now() - VALIDADE_CACHE + 30 * 1000); // relê a lista logo, caso a planilha tenha mudado
+  cacheRecados.em = 0; // um recado novo entra no próximo pedido do mural
   return d;
 }
 
-module.exports = { configurado, lista, buscar, confirmar, normalizar, ErroPlanilha };
+module.exports = { configurado, lista, buscar, confirmar, recados, normalizar, ErroPlanilha };
