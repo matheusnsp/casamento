@@ -1,15 +1,15 @@
 'use strict';
 
 /*
- * GET /api/recados — recados do mural do site: só as mensagens que o convidado deixou mostrar
- * e que estão com "Sim" na coluna Mural da planilha. Vai o nome curto (primeiro e último nome) e o texto,
+ * GET /api/recados — recados do mural do site: todas as mensagens da aba Convidados, menos as que
+ * estão com "Não" na coluna Mural da planilha. Vai o nome curto (primeiro e último nome) e o texto,
  * nada de e-mail, presença ou restrição. A resposta fica alguns minutos no cache da Vercel.
  */
 
 const presenca = require('./_lib/presenca');
 const { enviar, erro, metodoNaoPermitido, ipDe, dentroDoLimite } = require('./_lib/util');
 
-const MAX_RECADOS = 60;
+const MAX_RECADOS = 1000; // trava de segurança: na prática, um recado por convidado
 const CACHE_OK = 'public, max-age=60, s-maxage=300, stale-while-revalidate=3600';
 const SUFIXOS = /^(filho|filha|junior|júnior|jr\.?|neto|neta|sobrinho|sobrinha)$/i;
 
