@@ -48,6 +48,8 @@ Não é obrigatório: cada cobrança já leva o próprio endereço de aviso (`po
 - `id` único, só letras minúsculas, números e hífen. Não mude o `id` de um presente que já recebeu pagamento.
 - `"oculto": true` tira o presente da lista sem apagar.
 - `"somentePix": true` bloqueia o cartão naquele item.
+- `categorias`: a ordem delas é a ordem das seções e dos atalhos no topo da página. Para mudar um presente de seção, troque o `categoria` dele (o `id` e os pagamentos continuam os mesmos).
+- Fotos: `images/presentes/<id>.webp`, quadradas, 600 x 600 px. Produto em fundo branco, ou foto de cena para experiências.
 - `valorLivre`: mínimo, máximo e as sugestões de valor. `cartao`: liga/desliga o cartão, valor mínimo e máximo de parcelas.
 - Ícones: `aviao, hotel, jantar, barco, cafe, drinks, panela, airfryer, cafeteira, toalhas, bule, sofa, pizza, pipoca, churrasqueira, planta, presente`.
 - Link direto para um presente: `/presentes.html?presente=jantar-romantico`.
@@ -62,3 +64,12 @@ Não é obrigatório: cada cobrança já leva o próprio endereço de aviso (`po
 6. Limites contra abuso: 10 tentativas de cartão por IP a cada 15 min, 5 por CPF e 4 por cartão a cada 30 min, e 30 PIX por IP a cada 10 min.
 
 Nos logs da Vercel, procure por `pagamento_criado`, `pagamento_erro`, `webhook` e `limite_tentativas` (bloqueios por excesso de tentativas, sem CPF nem cartão no log).
+
+## 7. Mural de recados
+
+- Toda mensagem deixada na confirmação de presença aparece no mural do site (entre Presentes e Confirmar presença), num carrossel que gira sem parar. Isso vale também para as mensagens que chegaram antes do mural. Embaixo do campo de mensagem, o formulário avisa que o recado aparece no mural.
+- Para esconder um recado, escreva `Não` na coluna **Mural** da aba Convidados (a coluna é criada sozinha pelo Apps Script). Apagar o `Não` mostra de novo. Se a pessoa mandar outro recado depois, o `Não` continua valendo.
+- O site mostra só o primeiro e o último nome e o texto (nada de e-mail, presença ou restrição). Uma mudança na planilha aparece em até uns 10 minutos.
+- Recados que entraram pelo formulário antigo (aba Untitled, ou "formulário antigo" em Respostas do site) não estão na aba Convidados. Para eles aparecerem, copie o texto para a coluna Mensagem da pessoa.
+- Sem nenhum recado, a seção não aparece.
+- `GET /api/recados` lê os recados pelo Apps Script (`acao=recados`), que precisa estar na versão `2026-10-04.4` ou mais nova. Não há limite prático de recados: aparece um por convidado.
