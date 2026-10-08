@@ -52,6 +52,9 @@
   nav.solid{ background:rgba(244,245,241,0.88); backdrop-filter:blur(10px); padding:1.1rem clamp(1.25rem,5vw,3rem); border-color:var(--line); }
   .nav-links{ display:none; gap:2.4rem; list-style:none; margin:0; padding:0; }
   @media(min-width:720px){ .nav-links{ display:flex; } }
+  .nav-links a{ white-space:nowrap; }
+  @media(min-width:720px) and (max-width:1023px){ .nav-links{ gap:1.5rem; } .nav-links a{ letter-spacing:.14em; } }
+  @media(min-width:720px) and (max-width:899px){ .nav-links{ gap:1.1rem; } .nav-links a{ letter-spacing:.1em; } }
   .nav-links a{ font-size:0.7rem; letter-spacing:.2em; text-transform:uppercase; text-decoration:none; color:var(--paper); position:relative; padding-bottom:4px; transition:color .5s var(--ease); }
   nav.solid .nav-links a{ color:var(--charcoal); }
   .nav-links a::after{ content:""; position:absolute; left:0; bottom:0; width:0%; height:1px; background:var(--emerald-light); transition:width .35s var(--ease); }
@@ -78,6 +81,7 @@
   .mobile-menu.open a:nth-child(3){ transition-delay:.26s; }
   .mobile-menu.open a:nth-child(4){ transition-delay:.34s; }
   .mobile-menu.open a:nth-child(5){ transition-delay:.42s; }
+  .mobile-menu.open a:nth-child(6){ transition-delay:.5s; }
   @media(min-width:720px){ .mobile-menu{ display:none; } }
 
   .curtain{ position:fixed; inset:0; z-index:1000; pointer-events:auto; cursor:pointer; }
@@ -409,22 +413,29 @@
   /* ============================================================
      MURAL DE RECADOS (carrossel contínuo)
   ============================================================ */
-  .recados-section{ background:var(--paper-dim); padding:5.5rem 0 4rem; border-top:1px solid var(--line); position:relative; z-index:0; overflow:hidden; }
+  /* sem overflow:hidden aqui: a lista de nomes do recado pode passar da borda de baixo; o brilho do fundo é cortado pelo .amb-clip */
+  .recados-section{ background:var(--paper-dim); padding:5.5rem 0 4rem; border-top:1px solid var(--line); position:relative; z-index:1; }
+  .amb-clip{ position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:-1; }
   .recados-head{ text-align:center; max-width:560px; margin:0 auto 1.3rem; padding:0 1.5rem; }
   .recados-head h2{ font-size:clamp(1.7rem,4vw,2.5rem); font-style:italic; color:var(--ink); margin-top:.9rem; }
   .recados-head p{ margin-top:1.1rem; color:#5F6E68; font-size:.95rem; line-height:1.7; }
   .recados-faixa{ position:relative; overflow:hidden; padding:.6rem 0 1.4rem; }
   .recados-trilho{ list-style:none; margin:0; padding:0; display:flex; align-items:flex-start; width:max-content; }
+  /* Não cabe na tela: gira sozinho e dá para arrastar para o lado (dedo, mouse, trackpad ou setas do teclado) */
+  .recados-faixa[data-modo="rolando"], .recados-faixa[data-modo="deslizar"]{ overflow-x:auto; overflow-y:hidden; overscroll-behavior-x:contain; scrollbar-width:none; cursor:grab; }
+  .recados-faixa[data-modo="rolando"]::-webkit-scrollbar, .recados-faixa[data-modo="deslizar"]::-webkit-scrollbar{ display:none; }
+  .recados-faixa[data-modo="rolando"] .recados-trilho{ will-change:transform; }
   .recados-faixa[data-modo="rolando"]{ -webkit-mask-image:linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); mask-image:linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); }
-  .recados-faixa[data-modo="rolando"] .recados-trilho{ animation:rolar-recados var(--duracao, 90s) linear infinite; will-change:transform; }
-  .recados-faixa[data-modo="rolando"]:hover .recados-trilho, .recados-faixa[data-modo="rolando"]:focus-within .recados-trilho, .recados-faixa.pausado .recados-trilho{ animation-play-state:paused; }
-  @keyframes rolar-recados{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
+  .recados-faixa.arrastando{ cursor:grabbing; -webkit-user-select:none; user-select:none; }
+  .recados-faixa:focus-visible{ outline:1px solid var(--emerald); outline-offset:-2px; }
   .recados-faixa[data-modo="parado"] .recados-trilho{ width:auto; justify-content:center; padding:0 1.5rem; }
   .recados-faixa[data-modo="parado"] .recado:last-child{ margin-right:0; }
-  .recados-faixa[data-modo="deslizar"]{ overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; }
-  .recados-faixa[data-modo="deslizar"]::-webkit-scrollbar{ display:none; }
+  .recados-faixa[data-modo="deslizar"]{ scroll-snap-type:x mandatory; }
+  .recados-faixa[data-modo="deslizar"].arrastando{ scroll-snap-type:none; }
   .recados-faixa[data-modo="deslizar"] .recados-trilho{ padding:0 1.25rem; }
   .recados-faixa[data-modo="deslizar"] .recado{ scroll-snap-align:center; }
+  .recados-dica{ display:flex; justify-content:center; align-items:center; gap:.7rem; margin:-.4rem 0 2.4rem; padding:0 1.5rem; font-size:.6rem; letter-spacing:.16em; text-transform:uppercase; font-weight:600; color:#5F6E68; }
+  .recados-dica::before, .recados-dica::after{ content:""; width:22px; height:1px; background:var(--line); }
   .recado{ flex:none; width:290px; max-width:82vw; margin-right:1.25rem; background:var(--paper); border:1px solid var(--line); border-radius:6px; padding:1.45rem 1.5rem 1.3rem; box-shadow:0 22px 40px -32px rgba(8,21,23,.5); }
   .recado.medio{ width:340px; }
   .recado.longo{ width:420px; }
@@ -447,10 +458,27 @@
   .recado-fechar:hover{ background:rgba(47,117,102,.08); }
   .recado-fechar svg{ width:14px; height:14px; stroke:currentColor; stroke-width:1.4; fill:none; stroke-linecap:round; }
 
+  /* Recado: formulário próprio no mural, um por convidado */
+  .recado-card{ position:relative; width:calc(100% - 2.5rem); max-width:580px; margin:1rem auto 0; background:var(--paper); border:1px solid var(--line); border-radius:6px; padding:clamp(1.6rem,6vw,3rem); box-shadow:0 22px 40px -32px rgba(8,21,23,.5); }
+  .recado-card-titulo{ font-size:clamp(1.3rem,3.6vw,1.6rem); font-style:italic; color:var(--ink); margin:0 0 .5rem; }
+  .recado-card-sub{ color:#5F6E68; font-size:.88rem; line-height:1.6; margin:0 0 1.9rem; }
+  .recado-status{ margin:-.6rem 0 1.5rem; font-size:.86rem; line-height:1.55; color:var(--emerald-deep); }
+  .recado-status button{ margin-left:.4rem; }
+  .ajuda.conta{ text-align:right; font-variant-numeric:tabular-nums; }
+  .recado-apagar{ display:block; margin:1.4rem auto 0; }
+  .recado-apagar.armado{ color:#7A2C20; border-color:rgba(162,59,42,.5); }
+  .recado-ok{ text-align:center; padding:.8rem 0 .2rem; }
+  .recado-ok .check-wrap{ display:block; margin:0 auto 1.3rem; }
+  .recado-ok.show .check-circle, .recado-ok.show .check-mark{ stroke-dashoffset:0; }
+  .recado-ok h3{ font-size:clamp(1.25rem,4vw,1.55rem); font-style:italic; color:var(--ink); margin:0 0 .65rem; outline:none; }
+  .recado-ok p{ color:#5F6E68; font-size:.9rem; line-height:1.6; max-width:360px; margin:0 auto; }
+  .recado-ok .link-mini{ margin-top:1.7rem; }
+
   .rsvp-section{ position:relative; z-index:0; overflow:hidden; background:radial-gradient(90% 70% at 85% 0%, rgba(47,117,102,.14), transparent 55%), radial-gradient(120% 100% at 50% 0%, var(--ink-2) 0%, var(--ink) 45%, #081517 100%); padding:5.5rem 1.25rem 6rem; }
   .rsvp-head{ text-align:center; max-width:540px; margin:0 auto 3rem; padding:0 .5rem; }
   .rsvp-head h2{ font-size:clamp(1.7rem,4vw,2.5rem); font-style:italic; color:var(--paper); margin-top:.9rem; }
   .rsvp-head p{ color:#B9C6C0; margin-top:1.1rem; font-size:.9rem; line-height:1.65; }
+  .rsvp-head .link-claro{ color:var(--emerald-light); text-underline-offset:3px; }
   .rsvp-card{ max-width:580px; margin:0 auto; position:relative; background:var(--paper); padding:clamp(1.6rem,6vw,3.4rem); min-height:440px; }
   .field{ position:relative; margin-bottom:1.8rem; }
   .field input[type="text"], .field input[type="email"], .field textarea{ width:100%; background:transparent; border:none; border-bottom:1px solid var(--line); padding:.65rem .1rem; font-family:var(--body); font-size:1rem; color:var(--charcoal); outline:none; transition:border-color .3s var(--ease); }
@@ -507,6 +535,13 @@
   .thanks button{ margin-top:1.9rem; background:none; border:none; font-size:.7rem; letter-spacing:.18em; text-transform:uppercase; color:var(--emerald-deep); border-bottom:1px solid var(--line); padding-bottom:2px; }
   #rsvpForm{ transition:opacity .5s var(--ease), transform .5s var(--ease); }
   #rsvpForm.submitting{ opacity:0; transform:translateY(-8px); pointer-events:none; }
+  .thanks .thanks-recado{ margin-top:1.8rem; text-decoration:none; font-size:.7rem; letter-spacing:.18em; }
+  .thanks .thanks-recado + button{ margin-top:1.3rem; }
+  .rsvp-card.encerrado{ min-height:0; }
+  .rsvp-encerrado{ text-align:center; padding:.6rem 0; }
+  .rsvp-encerrado h3{ font-size:clamp(1.25rem,4vw,1.55rem); font-style:italic; color:var(--ink); margin:.9rem 0 .7rem; }
+  .rsvp-encerrado p{ color:#5F6E68; font-size:.9rem; line-height:1.65; max-width:400px; margin:0 auto; }
+  .rsvp-encerrado .link-mini{ display:inline-block; margin-top:1.7rem; text-decoration:none; }
 
   footer{ background:#081517; color:#7E9490; text-align:center; padding:3.6rem 1.5rem 2.6rem; }
   footer .foot-names{ font-family:var(--display); font-style:italic; font-weight:340; font-size:clamp(1.15rem,4vw,1.4rem); color:var(--paper); }
@@ -555,6 +590,7 @@
     <li><a href="#historia">Nossa história</a></li>
     <li><a href="#detalhes">Cerimônia</a></li>
     <li><a href="presentes.html">Presentes</a></li>
+    <li><a href="#recados">Recados</a></li>
     <li><a href="#confirmar">Confirmar presença</a></li>
   </ul>
   <button class="nav-burger" id="navBurger" aria-label="Abrir menu"><span></span><span></span><span></span></button>
@@ -565,6 +601,7 @@
   <a href="#historia">Nossa história</a>
   <a href="#detalhes">Cerimônia</a>
   <a href="presentes.html">Presentes</a>
+  <a href="#recados">Recados</a>
   <a href="#confirmar">Confirmar presença</a>
 </div>
 
@@ -768,21 +805,64 @@
   </div>
 </section>
 
-<!-- MURAL DE RECADOS: só aparece quando houver recado liberado na planilha -->
-<section class="recados-section" id="recados" aria-labelledby="recadosTitulo" hidden>
-  <div class="amb-glow c1"></div>
-  <div class="amb-glow c2"></div>
+<!-- MURAL DE RECADOS: o carrossel mostra os recados; embaixo, cada convidado deixa ou edita o seu -->
+<section class="recados-section" id="recados" aria-labelledby="recadosTitulo">
+  <div class="amb-clip" aria-hidden="true"><div class="amb-glow c1"></div><div class="amb-glow c2"></div></div>
   <div class="recados-head reveal">
     <span class="eyebrow">Mural de recados</span>
     <h2 id="recadosTitulo">Palavras de quem amamos</h2>
-    <p>Os recados deixados na confirmação de presença aparecem aqui. Obrigado por tanto carinho.</p>
+    <p>Deixe um recado para os noivos: ele aparece aqui no mural. Cada convidado tem o seu, e dá para voltar e editar quando quiser.</p>
   </div>
-  <div class="recados-acoes">
-    <a class="link-mini" href="#confirmar">Deixar meu recado</a>
+  <div class="recados-acoes" id="recadosAcoes" hidden>
+    <a class="link-mini" href="#recadoCard">Deixar meu recado</a>
     <button type="button" class="link-mini" id="recadosPausa" aria-pressed="false" hidden>Pausar</button>
   </div>
-  <div class="recados-faixa" id="recadosFaixa">
+  <div class="recados-faixa" id="recadosFaixa" role="region" aria-label="Recados dos convidados. Arraste para o lado ou use as setas para ver mais." hidden>
     <ul class="recados-trilho" id="recadosTrilho"></ul>
+  </div>
+  <p class="recados-dica" id="recadosDica" aria-hidden="true" hidden>Arraste para o lado para ver mais</p>
+  <div class="recado-card reveal" id="recadoCard">
+    <form id="recadoForm" novalidate>
+      <h3 class="recado-card-titulo">Deixe seu recado</h3>
+      <p class="recado-card-sub">Escolha seu nome na lista de convidados. Se você já deixou um recado, ele aparece aqui para editar.</p>
+      <div class="field" id="recadoCampoNome">
+        <div class="busca-caixa">
+          <input type="text" id="recadoNome" placeholder=" " autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="recadoListaNomes" aria-describedby="recadoAjudaNome">
+          <label for="recadoNome">Seu nome</label>
+          <ul class="sugestoes" id="recadoListaNomes" role="listbox" aria-label="Convidados encontrados" hidden></ul>
+        </div>
+        <small class="ajuda" id="recadoAjudaNome">Comece a digitar seu nome e escolha na lista que aparece.</small>
+      </div>
+      <div class="escolhido" id="recadoEscolhido" hidden>
+        <span class="group-label">Escrevendo como</span>
+        <div class="escolhido-linha">
+          <strong id="recadoEscolhidoNome"></strong>
+          <button type="button" class="link-mini" id="recadoTrocar">Trocar</button>
+        </div>
+      </div>
+      <p class="recado-status" id="recadoStatus" role="status" hidden></p>
+      <div class="rsvp-erro" id="recadoErroAbrir" role="alert" hidden></div>
+      <div id="recadoEscrever" hidden>
+        <div class="field">
+          <textarea id="recadoTexto" rows="4" maxlength="500" placeholder=" " aria-describedby="recadoConta"></textarea>
+          <label for="recadoTexto">Seu recado para os noivos</label>
+          <small class="ajuda conta" id="recadoConta">0/500</small>
+        </div>
+        <div class="rsvp-hp" aria-hidden="true"><label for="recadoApelido">Não preencha</label><input type="text" id="recadoApelido" tabindex="-1" autocomplete="off"></div>
+        <div class="rsvp-erro" id="recadoErro" role="alert" hidden></div>
+        <button type="submit" class="submit-btn" id="recadoEnviar"><span id="recadoEnviarTexto">Enviar recado</span></button>
+        <button type="button" class="link-mini recado-apagar" id="recadoApagar" hidden>Apagar meu recado</button>
+      </div>
+    </form>
+    <div class="recado-ok" id="recadoOk" hidden>
+      <svg class="check-wrap" viewBox="0 0 64 64" aria-hidden="true">
+        <circle class="check-circle" cx="32" cy="32" r="27"/>
+        <path class="check-mark" d="M20 33 L28 41 L45 22"/>
+      </svg>
+      <h3 id="recadoOkTitulo" tabindex="-1">Recado enviado!</h3>
+      <p id="recadoOkTexto">Obrigado pelo carinho. Ele aparece no mural para todos em alguns minutos.</p>
+      <button type="button" class="link-mini" id="recadoEditar">Editar meu recado</button>
+    </div>
   </div>
 </section>
 
@@ -801,9 +881,15 @@
   <div class="rsvp-head reveal">
     <span class="eyebrow on-dark">Confirme sua presença</span>
     <h2>Contamos com você</h2>
-    <p>Por favor, confirme até o dia 20 de dezembro de 2026 para nos ajudar com a organização do jantar.</p>
+    <p id="rsvpIntro">Por favor, confirme até o dia 20 de dezembro de 2026 para nos ajudar com a organização do jantar. Para deixar um recado para os noivos, use o <a class="link-claro" href="#recadoCard">mural de recados</a>.</p>
   </div>
-  <div class="rsvp-card reveal">
+  <div class="rsvp-card reveal" id="rsvpCard">
+    <div class="rsvp-encerrado" id="rsvpEncerrado" hidden>
+      <span class="eyebrow">Confirmações encerradas</span>
+      <h3>Obrigado a todos que responderam!</h3>
+      <p>O prazo para confirmar presença terminou em 20 de dezembro. Se precisar mudar sua resposta, fale diretamente com os noivos.</p>
+      <a class="link-mini" href="#recadoCard">Deixar um recado no mural</a>
+    </div>
     <form id="rsvpForm" novalidate>
       <div class="field" id="campoNome">
         <div class="busca-caixa">
@@ -845,11 +931,6 @@
         <input type="text" id="dietary" placeholder=" ">
         <label for="dietary">Restrição alimentar (opcional)</label>
       </div>
-      <div class="field">
-        <textarea id="message" rows="2" placeholder=" " aria-describedby="ajudaMensagem"></textarea>
-        <label for="message">Deixe uma mensagem para o casal (opcional)</label>
-        <small class="ajuda" id="ajudaMensagem">Seu recado aparece no mural de recados do site.</small>
-      </div>
       <div class="rsvp-hp" aria-hidden="true"><label for="rsvpApelido">Não preencha</label><input type="text" id="rsvpApelido" tabindex="-1" autocomplete="off"></div>
       <div class="rsvp-erro" id="rsvpErro" role="alert" hidden></div>
       <button type="submit" class="submit-btn" id="rsvpEnviar"><span id="rsvpEnviarTexto">Confirmar presença</span></button>
@@ -861,6 +942,7 @@
       </svg>
       <h3 id="thanksTitle">Obrigado pela confirmação!</h3>
       <p id="thanksText">Mal podemos esperar para celebrar esse dia com você.</p>
+      <a class="link-mini thanks-recado" href="#recadoCard" id="thanksRecado">Deixar um recado para os noivos</a>
       <button type="button" id="resetForm">Enviar outra resposta</button>
     </div>
   </div>
@@ -1057,13 +1139,17 @@
 
   /* ===== Mural de recados: carrossel contínuo com os recados liberados na planilha ===== */
   var mural = { secao: $('recados'), faixa: $('recadosFaixa'), trilho: $('recadosTrilho'), pausa: $('recadosPausa'), itens: [], largura: 0 };
-  var MURAL_VELOCIDADE = 32; // pixels por segundo
+  var MURAL_VELOCIDADE = 32;  // pixels por segundo
+  var MURAL_RETOMA = 5000;     // depois que a pessoa mexe no mural, o giro volta sozinho 5 s depois
+  var MURAL_FOLGA = 8000;      // cópias dos dois lados: dá para deslizar muito sem bater na ponta
+  // O giro anda a própria rolagem da faixa, então a pessoa pode arrastar para o lado a qualquer momento.
+  var giro = { conjunto: 0, inicio: 0, pos: 0, esperado: -1, ultimo: 0, raf: 0, ate: 0, segurando: false, sobre: false, foco: false, visivel: true };
 
   function cartaoRecado(r, i, copia){
     var li = document.createElement('li');
     var n = r.mensagem.length;
     li.className = 'recado' + (n > 260 ? ' longo' : n > 120 ? ' medio' : '');
-    if (copia) li.setAttribute('aria-hidden', 'true'); // a segunda volta é só para o giro não ter emenda
+    if (copia) li.setAttribute('aria-hidden', 'true'); // cópia: só para o giro dar a volta sem emenda
     li.innerHTML = '<figure><blockquote><p>' + esc(r.mensagem) + '</p></blockquote>' +
       '<button type="button" class="recado-mais" data-i="' + i + '"' + (copia ? ' tabindex="-1"' : '') + ' hidden>Ler tudo</button>' +
       '<figcaption>' + esc(r.nome) + '</figcaption></figure>';
@@ -1072,11 +1158,9 @@
 
   // Recado comprido demais para o cartão: mostra o "Ler tudo", que abre o texto inteiro numa janela.
   function marcarCortados(){
-    var cartoes = mural.trilho.children;
-    for (var i = 0; i < cartoes.length; i++) {
-      var p = cartoes[i].querySelector('p');
-      cartoes[i].querySelector('.recado-mais').hidden = !(p.scrollHeight > p.clientHeight + 1);
-    }
+    var cartoes = mural.trilho.children, cortado = [], i, p;
+    for (i = 0; i < cartoes.length; i++) { p = cartoes[i].querySelector('p'); cortado.push(p.scrollHeight > p.clientHeight + 1); } // mede tudo antes de mexer
+    for (i = 0; i < cartoes.length; i++) cartoes[i].querySelector('.recado-mais').hidden = !cortado[i];
   }
 
   var dialogo = $('recadoDialogo');
@@ -1088,7 +1172,8 @@
     dialogo.setAttribute('aria-label', 'Recado de ' + r.nome);
     if (typeof dialogo.showModal === 'function') dialogo.showModal(); else dialogo.setAttribute('open', '');
   }
-  function fecharRecado(){ if (typeof dialogo.close === 'function') dialogo.close(); else dialogo.removeAttribute('open'); }
+  function fecharRecado(){ if (typeof dialogo.close === 'function') dialogo.close(); else dialogo.removeAttribute('open'); esperarParaGirar(); }
+  dialogo.addEventListener('close', function(){ esperarParaGirar(); });
   mural.trilho.addEventListener('click', function(e){
     var b = e.target.closest('.recado-mais');
     if (b) abrirRecado(Number(b.getAttribute('data-i')));
@@ -1096,28 +1181,186 @@
   $('recadoFechar').addEventListener('click', fecharRecado);
   dialogo.addEventListener('click', function(e){ if (e.target === dialogo) fecharRecado(); }); // clique fora do texto
 
-  // Cabe na tela: fica parado e centralizado. Não cabe: gira sem parar (ou vira faixa de arrastar,
-  // para quem pediu menos movimento ou quando há só 1 ou 2 recados).
+  // Cabe na tela: fica parado e centralizado. Não cabe: gira sem parar e dá para arrastar para o lado
+  // (ou só arrastar, para quem pediu menos movimento ou quando há só 1 ou 2 recados).
   function montarMural(){
     var f = mural.faixa, t = mural.trilho;
+    pararGiro();
     t.innerHTML = '';
+    t.style.transform = '';
     mural.itens.forEach(function(r, i){ t.appendChild(cartaoRecado(r, i, false)); });
-    mural.secao.hidden = false;
+    f.hidden = false;
+    $('recadosAcoes').hidden = false;
     f.setAttribute('data-modo', 'parado');
+    giro.esperado = 0;
+    f.scrollLeft = 0;
     var modo = 'parado';
     if (f.scrollWidth > f.clientWidth + 1) {
       f.setAttribute('data-modo', '');
-      var conjunto = t.getBoundingClientRect().width;
+      var conjunto = t.getBoundingClientRect().width, tela = f.clientWidth;
       modo = reduceMotion || mural.itens.length < 3 ? 'deslizar' : 'rolando';
-      if (modo === 'rolando') {
-        mural.itens.forEach(function(r, i){ t.appendChild(cartaoRecado(r, i, true)); });
-        t.style.setProperty('--duracao', Math.max(20, Math.round(conjunto / MURAL_VELOCIDADE)) + 's');
-      }
       f.setAttribute('data-modo', modo);
+      if (modo === 'rolando') {
+        // Cópias antes e depois dos recados: girando ou arrastando, a faixa dá a volta sem emenda para os dois lados.
+        var copias = Math.max(1, Math.ceil((MURAL_FOLGA + tela / 2) / conjunto));
+        var antes = document.createDocumentFragment(), depois = document.createDocumentFragment();
+        for (var k = 0; k < copias; k++) {
+          mural.itens.forEach(function(r, i){ antes.appendChild(cartaoRecado(r, i, true)); depois.appendChild(cartaoRecado(r, i, true)); });
+        }
+        t.insertBefore(antes, t.firstChild);
+        t.appendChild(depois);
+        iniciarGiro(conjunto, copias, tela);
+      }
     }
+    if (modo === 'parado') f.removeAttribute('tabindex'); else f.setAttribute('tabindex', '0'); // setas do teclado rolam a faixa
     mural.pausa.hidden = modo !== 'rolando';
+    $('recadosDica').hidden = modo === 'parado';
     mural.largura = window.innerWidth;
     marcarCortados();
+  }
+
+  function esconderMural(){
+    pararGiro();
+    mural.trilho.innerHTML = '';
+    mural.faixa.hidden = true;
+    $('recadosAcoes').hidden = true;
+    $('recadosDica').hidden = true;
+  }
+
+  /* ----- giro contínuo + arrastar para o lado ----- */
+  function agora(){ return window.performance && performance.now ? performance.now() : new Date().getTime(); }
+  function esperarParaGirar(){ giro.ate = agora() + MURAL_RETOMA; }
+  // A rolagem só anda de pixel em pixel; a fração vai num deslocamento do trilho, para o giro sair liso.
+  function moverFaixa(x){
+    var i = Math.floor(x);
+    giro.esperado = i;
+    mural.faixa.scrollLeft = i;
+    mural.trilho.style.transform = giro.conjunto ? 'translate3d(' + (i - x).toFixed(2) + 'px,0,0)' : '';
+  }
+  // Soma ou tira voltas inteiras até cair no trecho do meio, longe das duas pontas (o que aparece na tela é igual).
+  function dentroDaVolta(x){
+    var c = giro.conjunto;
+    if (!c) return x;
+    while (x >= giro.inicio + c) x -= c;
+    while (x < giro.inicio) x += c;
+    return x;
+  }
+  function giroParado(t){
+    return mural.faixa.classList.contains('pausado') || giro.segurando || giro.sobre || giro.foco || !!arrasto ||
+      dialogo.hasAttribute('open') || t < giro.ate;
+  }
+  function quadro(t){
+    giro.raf = requestAnimationFrame(quadro);
+    var dt = giro.ultimo ? Math.min(t - giro.ultimo, 64) : 0;
+    giro.ultimo = t;
+    if (!giro.conjunto || giroParado(t)) return;
+    giro.pos = dentroDaVolta(giro.pos + MURAL_VELOCIDADE * dt / 1000);
+    moverFaixa(giro.pos);
+  }
+  function rodarQuadros(){
+    if (giro.raf || !giro.conjunto || !giro.visivel || !window.requestAnimationFrame) return;
+    giro.ultimo = 0;
+    giro.raf = requestAnimationFrame(quadro);
+  }
+  function iniciarGiro(conjunto, copias, tela){
+    giro.conjunto = conjunto;
+    giro.inicio = copias * conjunto - tela / 2; // trecho do meio: a mesma distância das duas pontas
+    giro.pos = copias * conjunto;               // começa no primeiro recado de verdade
+    moverFaixa(giro.pos);
+    rodarQuadros();
+  }
+  function pararGiro(){
+    if (giro.raf) cancelAnimationFrame(giro.raf);
+    giro.raf = 0;
+    giro.conjunto = 0;
+    clearTimeout(acomodar);
+    // Os cartões vão ser recriados: o "soltar" de um dedo ou do mouse que estava num cartão antigo não chega mais.
+    giro.segurando = false;
+    arrasto = null;
+    mural.faixa.classList.remove('arrastando');
+  }
+
+  // Rolagem que não veio do giro: dedo, trackpad, Shift + roda do mouse, setas do teclado ou Tab.
+  var acomodar = 0;
+  mural.faixa.addEventListener('scroll', function(){
+    var x = mural.faixa.scrollLeft;
+    if (Math.abs(x - giro.esperado) < 1) return;
+    giro.esperado = x;
+    giro.pos = x;
+    mural.trilho.style.transform = '';
+    esperarParaGirar();
+    acomodarDepois();
+  }, { passive: true });
+  function acomodarDepois(){ clearTimeout(acomodar); acomodar = setTimeout(acomodarFaixa, 200); }
+  // Terminada a rolagem, volta para o trecho do meio sem que dê para ver. Durante o gesto não mexe:
+  // mudar a rolagem com o dedo na tela trava o movimento no iPhone.
+  function acomodarFaixa(){
+    if (!giro.conjunto || giro.segurando || arrasto) return;
+    var ativo = document.activeElement;
+    if (ativo && ativo !== mural.faixa && mural.faixa.contains(ativo)) return; // não tira de vista o botão com foco
+    var x = mural.faixa.scrollLeft, y = dentroDaVolta(x);
+    giro.pos = y;
+    if (y !== x) moverFaixa(y);
+  }
+
+  // Mouse: clicar e arrastar para o lado (dedo e trackpad o próprio navegador já rola).
+  var arrasto = null;
+  mural.faixa.addEventListener('pointerdown', function(e){
+    var modo = mural.faixa.getAttribute('data-modo');
+    if (e.pointerType !== 'mouse' || e.button !== 0 || (modo !== 'rolando' && modo !== 'deslizar')) return;
+    if (e.target.closest && e.target.closest('button, a')) return; // "Ler tudo" continua clicável
+    arrasto = { id: e.pointerId, x: e.clientX, base: mural.faixa.scrollLeft, moveu: false };
+    try { mural.faixa.setPointerCapture(e.pointerId); } catch (erro) {}
+    e.preventDefault(); // não seleciona o texto
+  });
+  mural.faixa.addEventListener('pointermove', function(e){
+    if (!arrasto || e.pointerId !== arrasto.id) return;
+    var dx = e.clientX - arrasto.x;
+    if (!arrasto.moveu) {
+      if (Math.abs(dx) < 4) return;
+      arrasto.moveu = true;
+      mural.faixa.classList.add('arrastando');
+    }
+    var alvo = dentroDaVolta(arrasto.base - dx);
+    arrasto.base = alvo + dx; // deu a volta: o ponto de partida acompanha
+    giro.pos = alvo;
+    esperarParaGirar();
+    moverFaixa(alvo);
+  });
+  function soltarArrasto(e){
+    if (!arrasto || e.pointerId !== arrasto.id) return;
+    arrasto = null;
+    mural.faixa.classList.remove('arrastando');
+    esperarParaGirar();
+  }
+  mural.faixa.addEventListener('pointerup', soltarArrasto);
+  mural.faixa.addEventListener('pointercancel', soltarArrasto);
+  mural.faixa.addEventListener('lostpointercapture', soltarArrasto);
+
+  // Mouse em cima: para enquanto a pessoa lê. Dedo na tela: para, e volta um pouco depois de soltar.
+  mural.faixa.addEventListener('pointerenter', function(e){ if (e.pointerType === 'mouse') giro.sobre = true; });
+  mural.faixa.addEventListener('pointerleave', function(e){ if (e.pointerType === 'mouse') giro.sobre = false; });
+  mural.faixa.addEventListener('touchstart', function(){ giro.segurando = true; esperarParaGirar(); }, { passive: true });
+  function soltarDedo(e){
+    giro.segurando = !!(e.touches && e.touches.length);
+    esperarParaGirar();
+    acomodarDepois();
+  }
+  mural.faixa.addEventListener('touchend', soltarDedo, { passive: true });
+  mural.faixa.addEventListener('touchcancel', soltarDedo, { passive: true });
+  mural.faixa.addEventListener('wheel', function(e){ if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) esperarParaGirar(); }, { passive: true });
+  // Foco pelo teclado (Tab) dentro do mural também para o giro; clique de mouse não conta.
+  function focoDeTeclado(el){ try { return el.matches(':focus-visible'); } catch (erro) { return false; } }
+  mural.faixa.addEventListener('focusin', function(e){ giro.foco = focoDeTeclado(e.target); });
+  mural.faixa.addEventListener('focusout', function(){ giro.foco = false; esperarParaGirar(); });
+
+  // Fora da tela, o giro não gasta bateria.
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function(entradas){
+      giro.visivel = entradas[entradas.length - 1].isIntersecting;
+      if (giro.visivel) rodarQuadros();
+      else if (giro.raf) { cancelAnimationFrame(giro.raf); giro.raf = 0; }
+    }).observe(mural.faixa);
   }
 
   mural.pausa.addEventListener('click', function(){
@@ -1159,6 +1402,19 @@
   var acompanhantes = [];    // [{ id, nome, crianca }]
 
   function mostrarErro(texto){ $('rsvpErro').textContent = texto || ''; $('rsvpErro').hidden = !texto; }
+
+  // Último momento para confirmar presença: 20/12/2026, 23h59 no horário de Brasília.
+  // Para mudar, troque aqui e em api/_lib/presenca.js (o servidor também confere e recusa depois do prazo).
+  var PRAZO_CONFIRMACAO = Date.parse('2026-12-20T23:59:59-03:00');
+  var ultimoConfirmado = null; // { id, nome } de quem acabou de confirmar, para abrir o recado já com o nome
+  function fecharConfirmacoes(){
+    form.hidden = true;
+    thanksPanel.classList.remove('show');
+    $('rsvpEncerrado').hidden = false;
+    $('rsvpCard').classList.add('encerrado');
+    $('rsvpIntro').textContent = 'As confirmações foram encerradas em 20 de dezembro de 2026. Obrigado a todos que responderam!';
+  }
+  if (Date.now() > PRAZO_CONFIRMACAO) fecharConfirmacoes();
 
   function normalizar(s){ return String(s == null ? '' : s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim(); }
   // Cada palavra digitada precisa ser começo de uma palavra do nome ("mat nev" → Matheus Neves).
@@ -1302,6 +1558,7 @@
     e.preventDefault();
     if (enviando) return;
     mostrarErro('');
+    if (Date.now() > PRAZO_CONFIRMACAO) { fecharConfirmacoes(); return; }
     if (!escolhido) { mostrarErro('Busque e escolha seu nome na lista de convidados.'); $('guestName').focus(); return; }
     if (!attendValue) { mostrarErro('Diga se vai comparecer.'); $('attendPills').scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
     var email = $('guestEmail').value.trim();
@@ -1312,7 +1569,6 @@
       acompanhantes: attendValue === 'sim' ? acompanhantes.map(function(a){ return a.id; }) : [],
       email: email,
       restricao: $('dietary').value.trim(),
-      mensagem: $('message').value.trim(),
       hp: $('rsvpApelido').value
     };
     enviando = true;
@@ -1326,7 +1582,9 @@
         $('rsvpEnviar').disabled = false;
         $('rsvpEnviarTexto').textContent = attendValue === 'nao' ? 'Enviar resposta' : 'Confirmar presença';
         if (!d) { mostrarErro('Sem conexão com o servidor. Confira sua internet e tente de novo.'); return; }
+        if (!d.ok && d.erro === 'prazo_encerrado') { fecharConfirmacoes(); return; }
         if (!d.ok) { mostrarErro(d.mensagem || 'Não foi possível enviar. Tente de novo.'); return; }
+        ultimoConfirmado = { id: corpo.convidado, nome: d.nome || (escolhido && escolhido.nome) || '' };
         var primeiro = function(n){ return String(n).split(' ')[0]; };
         if (d.vai === 'sim') {
           thanksTitle.textContent = 'Obrigado, ' + primeiro(d.nome) + '!';
@@ -1340,6 +1598,209 @@
         setTimeout(function(){ thanksPanel.classList.add('show'); }, 350);
       });
   });
+
+  /* ===== Recado: formulário próprio no mural, um por convidado (dá para voltar e editar) ===== */
+  var MAX_RECADO = 500;
+  var rec = { pessoa: null, original: '', oculto: false, seq: 0, enviando: false, armado: null };
+  var recadoForm = $('recadoForm'), recadoTexto = $('recadoTexto');
+  function recadoErro(t){ $('recadoErro').textContent = t || ''; $('recadoErro').hidden = !t; }
+  function recadoStatus(t){ $('recadoStatus').textContent = t || ''; $('recadoStatus').hidden = !t; }
+  function contarRecado(){ $('recadoConta').textContent = recadoTexto.value.length + '/' + MAX_RECADO; }
+  function botoesRecado(){
+    $('recadoEnviarTexto').textContent = rec.enviando ? 'Enviando…' : rec.original ? 'Salvar alterações' : 'Enviar recado';
+    $('recadoEnviar').disabled = rec.enviando;
+    $('recadoApagar').hidden = !rec.original && !rec.oculto;
+  }
+  function desarmarApagar(){
+    clearTimeout(rec.armado);
+    rec.armado = null;
+    $('recadoApagar').classList.remove('armado');
+    $('recadoApagar').textContent = 'Apagar meu recado';
+  }
+  var AVISO_EDITAR = 'Este é o recado que você deixou. Pode editar e salvar de novo.';
+  var AVISO_GUARDADO = 'Você já deixou um recado, que está guardado com os noivos. Se escrever outro, ele substitui o anterior.';
+  function avisoRecado(){ return rec.original ? AVISO_EDITAR : rec.oculto ? AVISO_GUARDADO : ''; }
+
+  var buscaRecado = criarBusca({
+    input: $('recadoNome'), lista: $('recadoListaNomes'),
+    excluir: function(){ return []; },
+    aoEscolher: function(p){ escolherParaRecado(p); }
+  });
+
+  function escolherParaRecado(p){
+    rec.pessoa = { id: p.id, nome: p.nome };
+    rec.original = '';
+    rec.oculto = false;
+    recadoTexto.value = '';
+    $('recadoEscolhidoNome').textContent = p.nome;
+    $('recadoEscolhido').hidden = false;
+    $('recadoCampoNome').hidden = true;
+    $('recadoEscrever').hidden = true;
+    recadoErro('');
+    desarmarApagar();
+    abrirRecadoAtual();
+  }
+
+  // Busca o recado que a pessoa já deixou (se deixou) para ela editar.
+  function abrirRecadoAtual(){
+    var meu = ++rec.seq;
+    $('recadoErroAbrir').hidden = true;
+    recadoStatus('Abrindo o seu recado…');
+    fetch('api/recado?convidado=' + encodeURIComponent(rec.pessoa.id), { cache: 'no-store' })
+      .then(function(r){ return r.json().catch(function(){ return null; }); })
+      .catch(function(){ return null; })
+      .then(function(d){
+        if (meu !== rec.seq) return;
+        if (!d || !d.ok) {
+          recadoStatus('');
+          $('recadoErroAbrir').innerHTML = esc((d && d.mensagem) || 'Sem conexão com o servidor. Confira sua internet e tente de novo.') +
+            ' <button type="button" class="link-mini" id="recadoDeNovo">Tentar de novo</button>';
+          $('recadoErroAbrir').hidden = false;
+          return;
+        }
+        rec.original = d.mensagem || '';
+        rec.oculto = !rec.original && d.oculto === true;
+        recadoTexto.value = rec.original;
+        recadoStatus(avisoRecado());
+        $('recadoEscrever').hidden = false;
+        contarRecado();
+        botoesRecado();
+        recadoTexto.focus({ preventScroll: true });
+      });
+  }
+  $('recadoErroAbrir').addEventListener('click', function(e){
+    if (e.target.id === 'recadoDeNovo' && rec.pessoa) abrirRecadoAtual();
+  });
+
+  $('recadoTrocar').addEventListener('click', function(){
+    if (rec.enviando) return;
+    rec.seq++;
+    rec.pessoa = null;
+    rec.original = '';
+    rec.oculto = false;
+    recadoTexto.value = '';
+    contarRecado();
+    $('recadoEscolhido').hidden = true;
+    $('recadoEscrever').hidden = true;
+    $('recadoErroAbrir').hidden = true;
+    recadoStatus('');
+    recadoErro('');
+    desarmarApagar();
+    $('recadoCampoNome').hidden = false;
+    buscaRecado.limpar();
+    $('recadoNome').focus();
+  });
+
+  recadoTexto.addEventListener('input', function(){ contarRecado(); recadoErro(''); });
+
+  function enviarRecado(corpo, tipo){
+    var pessoa = rec.pessoa;
+    rec.enviando = true;
+    botoesRecado();
+    recadoErro('');
+    fetch('api/recado', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(corpo) })
+      .then(function(r){ return r.json().catch(function(){ return null; }); })
+      .catch(function(){ return null; })
+      .then(function(d){
+        rec.enviando = false;
+        botoesRecado();
+        if (rec.pessoa !== pessoa) return; // trocou de nome no meio do envio: esta resposta não é de quem está na tela
+        if (!d) { recadoErro('Sem conexão com o servidor. Confira sua internet e tente de novo.'); return; }
+        if (!d.ok) { recadoErro(d.mensagem || 'Não foi possível enviar. Tente de novo.'); return; }
+        var antes = rec.original;
+        rec.original = d.mensagem || '';
+        rec.oculto = false;
+        atualizarMuralLocal(d.nomeMural, antes, rec.original, d.noMural);
+        mostrarRecadoOk(tipo !== 'apagado' && !d.noMural ? 'guardado' : tipo);
+      });
+  }
+
+  recadoForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    if (rec.enviando) return;
+    if (!rec.pessoa) { recadoStatus('Busque e escolha seu nome na lista de convidados.'); $('recadoNome').focus(); return; }
+    var texto = recadoTexto.value.trim();
+    if (!texto) {
+      recadoErro(rec.original ? 'Escreva o seu recado. Para tirar o recado do mural, use "Apagar meu recado".' : 'Escreva o seu recado.');
+      recadoTexto.focus();
+      return;
+    }
+    desarmarApagar();
+    enviarRecado({ convidado: rec.pessoa.id, mensagem: texto, hp: $('recadoApelido').value }, rec.original || rec.oculto ? 'editado' : 'novo');
+  });
+
+  // Apagar pede um segundo toque, para ninguém apagar sem querer.
+  $('recadoApagar').addEventListener('click', function(){
+    if (rec.enviando || !rec.pessoa) return;
+    if (!rec.armado) {
+      $('recadoApagar').classList.add('armado');
+      $('recadoApagar').textContent = 'Toque de novo para apagar';
+      rec.armado = setTimeout(desarmarApagar, 5000);
+      return;
+    }
+    desarmarApagar();
+    enviarRecado({ convidado: rec.pessoa.id, mensagem: '', apagar: true, hp: $('recadoApelido').value }, 'apagado');
+  });
+
+  var TEXTOS_OK = {
+    novo: ['Recado enviado!', 'Obrigado pelo carinho. Ele aparece no mural para todos em alguns minutos.', 'Editar meu recado'],
+    editado: ['Recado atualizado!', 'A nova versão aparece no mural para todos em alguns minutos.', 'Editar de novo'],
+    apagado: ['Recado apagado', 'Ele não aparece mais no mural (pode levar alguns minutos). Se quiser, pode escrever outro.', 'Escrever outro recado'],
+    guardado: ['Recado salvo!', 'Obrigado pelo carinho. Os noivos vão receber o seu recado.', 'Editar meu recado']
+  };
+  function mostrarRecadoOk(tipo){
+    var t = TEXTOS_OK[tipo] || TEXTOS_OK.novo;
+    $('recadoOkTitulo').textContent = t[0];
+    $('recadoOkTexto').textContent = t[1];
+    $('recadoEditar').textContent = t[2];
+    recadoForm.hidden = true;
+    var ok = $('recadoOk');
+    ok.hidden = false;
+    ok.classList.remove('show');
+    void ok.offsetWidth;
+    ok.classList.add('show');
+    $('recadoOkTitulo').focus({ preventScroll: true });
+  }
+  $('recadoEditar').addEventListener('click', function(){
+    $('recadoOk').hidden = true;
+    $('recadoOk').classList.remove('show');
+    recadoForm.hidden = false;
+    recadoTexto.value = rec.original;
+    contarRecado();
+    botoesRecado();
+    recadoStatus(avisoRecado());
+    $('recadoEscrever').hidden = false;
+    recadoTexto.focus();
+  });
+
+  // Depois de confirmar presença: abre o recado já com o nome de quem confirmou.
+  function abrirRecadoPara(p){
+    if (rec.enviando) { $('recadoCard').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' }); return; } // espera o envio em curso
+    $('recadoOk').hidden = true;
+    $('recadoOk').classList.remove('show');
+    recadoForm.hidden = false;
+    escolherParaRecado(p);
+    $('recadoCard').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
+  }
+  $('thanksRecado').addEventListener('click', function(e){
+    if (!ultimoConfirmado || !ultimoConfirmado.id) return;
+    e.preventDefault();
+    abrirRecadoPara(ultimoConfirmado);
+  });
+
+  // Quem acabou de escrever já vê o próprio recado no mural; para os outros, ele entra no próximo carregamento.
+  function atualizarMuralLocal(nome, antes, depois, noMural){
+    if (!nome) return;
+    var itens = mural.itens.slice();
+    if (antes) {
+      for (var i = 0; i < itens.length; i++) {
+        if (itens[i].nome === nome && itens[i].mensagem === antes) { itens.splice(i, 1); break; }
+      }
+    }
+    if (noMural && depois) itens.unshift({ nome: nome, mensagem: depois });
+    mural.itens = itens;
+    if (itens.length) montarMural(); else esconderMural();
+  }
 
   $('resetForm').addEventListener('click', function(){
     thanksPanel.classList.remove('show');

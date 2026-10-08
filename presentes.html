@@ -60,6 +60,9 @@
   nav.solid{ background:rgba(244,245,241,0.88); backdrop-filter:blur(10px); padding:1.1rem clamp(1.25rem,5vw,3rem); border-color:var(--line); }
   .nav-links{ display:none; gap:2.4rem; list-style:none; margin:0; padding:0; }
   @media(min-width:720px){ .nav-links{ display:flex; } }
+  .nav-links a{ white-space:nowrap; }
+  @media(min-width:720px) and (max-width:1023px){ .nav-links{ gap:1.5rem; } .nav-links a{ letter-spacing:.14em; } }
+  @media(min-width:720px) and (max-width:899px){ .nav-links{ gap:1.1rem; } .nav-links a{ letter-spacing:.1em; } }
   .nav-links a{ font-size:0.7rem; letter-spacing:.2em; text-transform:uppercase; text-decoration:none; color:var(--paper); position:relative; padding-bottom:4px; transition:color .5s var(--ease); }
   nav.solid .nav-links a{ color:var(--charcoal); }
   .nav-links a::after{ content:""; position:absolute; left:0; bottom:0; width:0%; height:1px; background:var(--emerald-light); transition:width .35s var(--ease); }
@@ -84,6 +87,7 @@
   .mobile-menu.open a:nth-child(3){ transition-delay:.26s; }
   .mobile-menu.open a:nth-child(4){ transition-delay:.34s; }
   .mobile-menu.open a:nth-child(5){ transition-delay:.42s; }
+  .mobile-menu.open a:nth-child(6){ transition-delay:.5s; }
   @media(min-width:720px){ .mobile-menu{ display:none; } }
 
   /* ---------- cabeçalho ---------- */
@@ -293,6 +297,7 @@
     <li><a href="index.html#historia">Nossa história</a></li>
     <li><a href="index.html#detalhes">Cerimônia</a></li>
     <li><a href="presentes.html" class="current" aria-current="page">Presentes</a></li>
+    <li><a href="index.html#recados">Recados</a></li>
     <li><a href="index.html#confirmar">Confirmar presença</a></li>
   </ul>
   <button class="nav-burger" id="navBurger" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span><span></span></button>
@@ -303,6 +308,7 @@
   <a href="index.html#historia">Nossa história</a>
   <a href="index.html#detalhes">Cerimônia</a>
   <a href="presentes.html" class="current" aria-current="page">Presentes</a>
+  <a href="index.html#recados">Recados</a>
   <a href="index.html#confirmar">Confirmar presença</a>
 </div>
 

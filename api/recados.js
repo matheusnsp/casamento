@@ -11,20 +11,6 @@ const { enviar, erro, metodoNaoPermitido, ipDe, dentroDoLimite } = require('./_l
 
 const MAX_RECADOS = 1000; // trava de segurança: na prática, um recado por convidado
 const CACHE_OK = 'public, max-age=60, s-maxage=300, stale-while-revalidate=3600';
-const SUFIXOS = /^(filho|filha|junior|júnior|jr\.?|neto|neta|sobrinho|sobrinha)$/i;
-
-/* "Sônia Regina Neves dos Santos" → "Sônia Santos"; "João da Silva Filho" → "João Silva Filho". */
-function nomeCurto(nome) {
-  const p = String(nome).trim().split(/\s+/).filter(Boolean);
-  if (p.length <= 2) return p.join(' ');
-  const ultimo = p[p.length - 1];
-  if (SUFIXOS.test(ultimo)) return [p[0], p[p.length - 2], ultimo].join(' ');
-  return p[0] + ' ' + ultimo;
-}
-
-function texto(s) {
-  return String(s).replace(/\r\n?/g, '\n').replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim().slice(0, 500);
-}
 
 module.exports = async (req, res) => {
   if (req.method !== 'GET') return metodoNaoPermitido(res, 'GET');
@@ -38,7 +24,7 @@ module.exports = async (req, res) => {
       .slice()
       .sort((a, b) => b.em - a.em)
       .slice(0, MAX_RECADOS)
-      .map((r) => ({ nome: nomeCurto(r.nome), mensagem: texto(r.mensagem) }))
+      .map((r) => ({ nome: presenca.nomeCurto(r.nome), mensagem: presenca.textoRecado(r.mensagem) }))
       .filter((r) => r.nome && r.mensagem);
     return enviar(res, 200, { ok: true, recados }, CACHE_OK);
   } catch (e) {

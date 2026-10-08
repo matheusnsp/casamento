@@ -3,6 +3,8 @@
 /*
  * POST /api/presenca — confirma presença de um convidado da lista e, se for, dos acompanhantes
  * escolhidos (também da lista). A planilha confere tudo de novo antes de gravar.
+ * Depois do prazo (20/12/2026, 23h59 de Brasília) as confirmações são recusadas.
+ * O recado tem formulário próprio (/api/recado); "mensagem" aqui só chega de página antiga em cache.
  */
 
 const presenca = require('./_lib/presenca');
@@ -13,6 +15,9 @@ const MAX_ACOMPANHANTES = 6;
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return u.metodoNaoPermitido(res, 'POST');
+  if (!presenca.confirmacoesAbertas()) {
+    return u.erro(res, 403, 'prazo_encerrado', 'As confirmações foram encerradas em 20 de dezembro. Se precisar mudar sua resposta, fale diretamente com os noivos.');
+  }
   if (!presenca.configurado()) return u.erro(res, 503, 'indisponivel', 'A confirmação de presença está sendo ajustada. Tente de novo em alguns minutos.');
   if (!u.dentroDoLimite('presenca:' + u.ipDe(req), 15, 10 * 60 * 1000)) {
     return u.erro(res, 429, 'muitas_tentativas', 'Muitas tentativas seguidas. Espere alguns minutos e tente de novo.');

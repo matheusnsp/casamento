@@ -67,9 +67,25 @@ Nos logs da Vercel, procure por `pagamento_criado`, `pagamento_erro`, `webhook` 
 
 ## 7. Mural de recados
 
-- Toda mensagem deixada na confirmação de presença aparece no mural do site (entre Presentes e Confirmar presença), num carrossel que gira sem parar. Isso vale também para as mensagens que chegaram antes do mural. Embaixo do campo de mensagem, o formulário avisa que o recado aparece no mural.
-- Para esconder um recado, escreva `Não` na coluna **Mural** da aba Convidados (a coluna é criada sozinha pelo Apps Script). Apagar o `Não` mostra de novo. Se a pessoa mandar outro recado depois, o `Não` continua valendo.
-- O site mostra só o primeiro e o último nome e o texto (nada de e-mail, presença ou restrição). Uma mudança na planilha aparece em até uns 10 minutos.
+- O recado tem formulário próprio, no fim do mural (menu **Recados**). A pessoa busca o nome na lista de convidados e escreve. A confirmação de presença não tem mais campo de mensagem.
+- **Um recado por convidado**, na coluna **Mensagem** da aba Convidados. Se a pessoa voltar, o recado que ela deixou aparece preenchido para editar; salvar de novo substitui o anterior. "Apagar meu recado" (pede dois toques) tira o recado do mural.
+- Cada envio fica registrado na aba **Respostas do site** (origem "recado novo", "recado editado" ou "recado apagado"), com o texto anterior na coluna **Recado anterior**. A coluna **Recado em** guarda quando foi escrito: o mural mostra os mais novos primeiro.
+- Como na confirmação, quem souber o nome de um convidado consegue escrever no lugar dele. O histórico acima mostra o que mudou, e o casal pode esconder qualquer recado.
+- Para esconder um recado, escreva `Não` na coluna **Mural** da aba Convidados (a coluna é criada sozinha pelo Apps Script). Apagar o `Não` mostra de novo. Se a pessoa editar o recado depois, o `Não` continua valendo.
+- Recado escondido também não aparece no formulário: quem escolher aquele nome só vê o aviso de que já existe um recado guardado com os noivos, e pode escrever outro por cima (o anterior fica no histórico).
+- Tudo o que a pessoa digita (recado, e-mail, restrição) entra na planilha como texto puro. Um recado que comece com `=` não vira fórmula, e `50%` não vira número.
+- O site mostra só o primeiro e o último nome e o texto (nada de e-mail, presença ou restrição). Uma mudança na planilha aparece em até uns 10 minutos; quem acabou de escrever já vê o próprio recado na hora.
 - Recados que entraram pelo formulário antigo (aba Untitled, ou "formulário antigo" em Respostas do site) não estão na aba Convidados. Para eles aparecerem, copie o texto para a coluna Mensagem da pessoa.
-- Sem nenhum recado, a seção não aparece.
-- `GET /api/recados` lê os recados pelo Apps Script (`acao=recados`), que precisa estar na versão `2026-10-04.4` ou mais nova. Não há limite prático de recados: aparece um por convidado.
+- Sem nenhum recado, o carrossel não aparece; o formulário continua lá.
+- Quando os recados não cabem na tela, o carrossel gira sozinho e dá para arrastar para os dois lados (dedo no celular; mouse, trackpad ou setas do teclado no computador). Depois que a pessoa mexe, ele espera 5 segundos e volta a girar. Para quem pediu menos movimento no aparelho, ou com só 1 ou 2 recados, ele não gira: só arrasta.
+- O recado continua aberto depois do prazo da confirmação.
+- `GET /api/recados` (mural) e `GET/POST /api/recado` (recado de um convidado) usam o Apps Script, que precisa estar na versão `2026-10-08.2` ou mais nova. Limites: 60 leituras e 20 envios por IP a cada 10 min; recado de até 500 caracteres.
+
+## 8. Prazo para confirmar presença
+
+- As confirmações fecham às **23h59 de 20/12/2026** (horário de Brasília). Depois disso a página troca o formulário por um aviso de encerramento, e o servidor recusa qualquer confirmação (`403 prazo_encerrado`), mesmo de quem estiver com a página aberta.
+- Para mudar o prazo, troque a data no código e publique de novo (commit e push). São estes lugares:
+  1. `index.html`: `PRAZO_CONFIRMACAO` (o que a página usa para fechar o formulário) e os três textos com "20 de dezembro" (o aviso acima do formulário, o painel de encerrado e o texto que aparece quando fecha).
+  2. `api/_lib/presenca.js`: `PRAZO_PADRAO` (o que o servidor aceita).
+  3. `api/presenca.js`: a mensagem de erro com "20 de dezembro".
+- Mudar só um dos lados não funciona: se só o servidor mudar, a página continua fechando no dia 20. A variável `PRESENCA_PRAZO` que aparece no código serve só para testes.
