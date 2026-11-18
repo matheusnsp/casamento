@@ -57,6 +57,12 @@
   /* ---------- navegação (igual à página inicial) ---------- */
   /* sem transição: ela brigava com a rolagem no iPhone. Só transform, que a placa de vídeo desenha sozinha */
   #progress{ position:fixed; top:0; left:0; height:2px; width:100%; background:var(--emerald-light); z-index:900; transform-origin:left; transform:scaleX(0); will-change:transform; pointer-events:none; }
+  /* Onde o navegador sabe (Safari 26, Chrome), a própria rolagem move a linha, fora do JavaScript:
+     não engasga quando a barra do Safari aparece ou some ao trocar a direção. */
+  @keyframes progresso-rolagem{ from{ transform:scaleX(0); } to{ transform:scaleX(1); } }
+  @supports (animation-timeline: scroll()){
+    #progress{ animation:progresso-rolagem linear both; animation-timeline:scroll(root block); }
+  }
   nav{ position:fixed; top:0; left:0; right:0; z-index:800; display:flex; align-items:center; justify-content:center; padding:1.6rem clamp(1.25rem,5vw,3rem); background:transparent; transition:background .5s var(--ease), padding .4s var(--ease), border-color .5s var(--ease); border-bottom:1px solid transparent; }
   nav.solid{ background:rgba(244,245,241,0.88); backdrop-filter:blur(10px); padding:1.1rem clamp(1.25rem,5vw,3rem); border-color:var(--line); }
   .nav-links{ display:none; gap:2.4rem; list-style:none; margin:0; padding:0; }
@@ -507,12 +513,13 @@
   var nav = $('mainNav'), progress = $('progress');
   // A rolagem dispara dezenas de eventos por segundo: o trabalho fica para o próximo quadro, uma vez só.
   var navSolida = null;
+  var progressoNoCss = !!(window.CSS && CSS.supports && CSS.supports('animation-timeline: scroll()'));
   function onScroll(){
     var doc = document.documentElement;
     var top = window.pageYOffset || doc.scrollTop;
     var altura = doc.scrollHeight - doc.clientHeight;
     var fracao = altura > 0 ? Math.min(1, top / altura) : 0;
-    progress.style.transform = 'scaleX(' + fracao.toFixed(4) + ')';
+    if(!progressoNoCss) progress.style.transform = 'scaleX(' + fracao.toFixed(4) + ')';
     var solida = top > 60;
     if(solida !== navSolida){ navSolida = solida; nav.classList.toggle('solid', solida); }
   }
@@ -522,7 +529,6 @@
     quadroRolagem = requestAnimationFrame(function(){ quadroRolagem = 0; onScroll(); });
   }
   document.addEventListener('scroll', agendarRolagem, { passive: true });
-  window.addEventListener('resize', agendarRolagem);
   onScroll();
   var burger = $('navBurger'), mobileMenu = $('mobileMenu');
   function fecharMenu(){ burger.classList.remove('active'); burger.setAttribute('aria-expanded', 'false'); mobileMenu.classList.remove('open'); document.body.style.overflow = ''; }
