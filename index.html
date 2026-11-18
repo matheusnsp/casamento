@@ -577,12 +577,65 @@
   }
 
   @media (prefers-reduced-motion: reduce){ *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.2s !important; } html{ scroll-behavior:auto; } .hero-glow{ animation:none; } }
+
+  /* ---------- Música ---------- */
+  .curtain-som{ display:inline-flex; align-items:center; gap:.55em; }
+  .curtain-som svg{ width:11px; height:11px; display:inline-block; opacity:.85; }
+  .player{ position:fixed; left:clamp(.9rem,3vw,1.6rem); bottom:clamp(.9rem,3vw,1.6rem); z-index:830; display:flex; align-items:center; gap:.85rem; padding:.45rem .45rem .45rem .45rem; border-radius:999px; background:rgba(15,32,35,.86); backdrop-filter:blur(14px) saturate(1.2); -webkit-backdrop-filter:blur(14px) saturate(1.2); border:1px solid var(--line-dark); box-shadow:0 14px 40px -14px rgba(8,21,23,.55); color:var(--paper); opacity:0; transform:translateY(14px); pointer-events:none; transition:opacity .7s var(--ease), transform .7s var(--ease), padding .55s var(--ease); }
+  .player.visivel{ opacity:1; transform:none; pointer-events:auto; }
+  .player-disco{ position:relative; width:46px; height:46px; flex:none; border:0; padding:0; border-radius:50%; background:none; color:inherit; }
+  .player-disco .vinil{ position:absolute; inset:4px; border-radius:50%; background:repeating-radial-gradient(circle at 50% 50%, #0b1416 0 1.2px, #18272a 1.6px 2.6px); box-shadow:inset 0 0 0 1px rgba(255,255,255,.06); animation:girar 5.5s linear infinite; animation-play-state:paused; }
+  .player-disco .vinil::before{ content:""; position:absolute; inset:0; border-radius:50%; background:conic-gradient(from 30deg, transparent 0 12%, rgba(255,255,255,.13) 16%, transparent 22% 62%, rgba(255,255,255,.09) 66%, transparent 72%); }
+  .player-disco .rotulo{ position:absolute; inset:31%; border-radius:50%; background:radial-gradient(circle at 50% 50%, var(--paper) 0 9%, var(--emerald) 10% 100%); box-shadow:0 0 0 1.5px rgba(111,179,158,.5); }
+  .player.tocando .player-disco .vinil{ animation-play-state:running; }
+  .player-disco .anel{ position:absolute; inset:0; transform:rotate(-90deg); }
+  .player-disco .anel circle{ fill:none; stroke-width:1.6; }
+  .player-disco .anel .trilho{ stroke:rgba(111,179,158,.18); }
+  .player-disco .anel .feito{ stroke:var(--emerald-light); stroke-linecap:round; stroke-dasharray:138.2; stroke-dashoffset:138.2; transition:stroke-dashoffset .3s linear; }
+  .player-disco .icone{ position:absolute; inset:0; display:grid; place-items:center; opacity:0; transition:opacity .3s; }
+  .player-disco .icone span{ width:22px; height:22px; border-radius:50%; background:rgba(244,245,241,.92); display:grid; place-items:center; color:var(--ink); }
+  .player-disco .icone svg{ width:9px; height:9px; }
+  .player:not(.tocando) .player-disco .icone{ opacity:1; }
+  .player-info{ display:flex; flex-direction:column; gap:.2rem; min-width:0; max-width:11rem; overflow:hidden; white-space:nowrap; transition:max-width .55s var(--ease), opacity .4s var(--ease); }
+  .player-info .musica{ font-family:var(--display); font-style:italic; font-size:1rem; line-height:1.1; letter-spacing:.01em; }
+  .player-info .artista{ font-size:.58rem; letter-spacing:.24em; text-transform:uppercase; color:var(--emerald-light); }
+  .player-acao{ flex:none; display:flex; align-items:center; gap:.5rem; margin-right:.45rem; border:0; background:none; color:var(--paper); padding:.55rem .35rem; font-size:.6rem; letter-spacing:.2em; text-transform:uppercase; transition:max-width .55s var(--ease), opacity .4s var(--ease); max-width:8rem; overflow:hidden; }
+  .ondas{ display:flex; align-items:flex-end; gap:2px; height:12px; }
+  .ondas i{ width:2px; height:100%; border-radius:1px; background:var(--emerald-light); transform-origin:bottom; transform:scaleY(.25); transition:transform .4s; }
+  .player.tocando .ondas i{ animation:onda 1.1s ease-in-out infinite; }
+  .player.tocando .ondas i:nth-child(2){ animation-delay:-.45s; animation-duration:.9s; }
+  .player.tocando .ondas i:nth-child(3){ animation-delay:-.2s; animation-duration:1.25s; }
+  .player.tocando .ondas i:nth-child(4){ animation-delay:-.7s; animation-duration:1s; }
+  .player.recolhido{ gap:0; }
+  .player.recolhido .player-info, .player.recolhido .player-acao{ max-width:0; opacity:0; margin:0; padding-left:0; padding-right:0; }
+  @keyframes girar{ to{ transform:rotate(360deg); } }
+  @keyframes onda{ 0%,100%{ transform:scaleY(.3); } 50%{ transform:scaleY(1); } }
+  @media (prefers-reduced-motion: reduce){ .player-disco .vinil, .player.tocando .ondas i{ animation:none; } .player.tocando .ondas i{ transform:scaleY(.7); } }
 </style>
 </head>
 <body>
 
 <div class="grain"></div>
 <div id="progress"></div>
+
+<!-- MÚSICA -->
+<audio id="musica" src="musica/photograph.mp3" preload="none" loop></audio>
+<div class="player" id="player" role="region" aria-label="Música do casal">
+  <button type="button" class="player-disco" id="playerDisco" aria-label="Tocar a música">
+    <span class="vinil"></span>
+    <span class="rotulo"></span>
+    <svg class="anel" viewBox="0 0 46 46" aria-hidden="true"><circle class="trilho" cx="23" cy="23" r="22"/><circle class="feito" id="playerAnel" cx="23" cy="23" r="22"/></svg>
+    <span class="icone" aria-hidden="true"><span><svg viewBox="0 0 10 10"><path d="M2 1 L9 5 L2 9 Z" fill="currentColor"/></svg></span></span>
+  </button>
+  <div class="player-info" aria-hidden="true">
+    <span class="musica">Photograph</span>
+    <span class="artista">Ed Sheeran</span>
+  </div>
+  <button type="button" class="player-acao" id="playerAcao">
+    <span class="ondas" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+    <span id="playerTexto">Tocar</span>
+  </button>
+</div>
 
 <nav id="mainNav">
   <ul class="nav-links">
@@ -614,7 +667,7 @@
       <path class="sprig-line" d="M100,250 C98,214 102,180 98,148 C95,120 103,95 100,58 M98,150 C82,142 65,138 50,148 C64,150 80,157 98,168 M100,120 C116,110 133,104 150,112 C136,116 118,124 100,136 M99,90 C85,82 70,77 56,84 C68,88 82,94 99,102 M100,60 C90,48 82,38 82,24 C90,32 98,45 100,60 C102,45 110,32 118,24 C118,38 110,48 100,60"/>
     </svg>
   </div>
-  <div class="curtain-skip">Toque para abrir</div>
+  <div class="curtain-skip"><span class="curtain-som"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4.5 9.5V2.2l6-1.2v7.2" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="3" cy="9.5" r="1.5" fill="currentColor"/><circle cx="9" cy="8.2" r="1.5" fill="currentColor"/></svg>Toque para abrir</span></div>
 </div>
 
 <!-- HERO -->
@@ -1036,6 +1089,7 @@
     curtain.classList.add('open');
     revealHero();
     setTimeout(function(){ curtain.classList.add('done'); }, 1300);
+    if(window.musicaAoAbrir) window.musicaAoAbrir();
   }
   var semCortina = document.documentElement.classList.contains('sem-cortina');
   if(reduceMotion || semCortina){ curtainDone = true; curtain.classList.add('done'); revealHero(); }
@@ -1821,6 +1875,98 @@
       mostrarErro('');
     }, 400);
   });
+})();
+</script>
+
+<script>
+/* Música: começa quando o convidado toca para abrir o convite (o navegador só deixa tocar som depois de um toque).
+   Quem pausar fica pausado nesta visita; ao voltar de outra página, a música continua de onde parou. */
+(function(){
+  var audio = document.getElementById('musica');
+  var player = document.getElementById('player');
+  var disco = document.getElementById('playerDisco');
+  var acao = document.getElementById('playerAcao');
+  var texto = document.getElementById('playerTexto');
+  var anel = document.getElementById('playerAnel');
+  if(!audio || !player) return;
+  var VOLUME = 0.55, VOLTA = 138.2;
+  var ler = function(k){ try { return sessionStorage.getItem(k); } catch(e){ return null; } };
+  var gravar = function(k, v){ try { sessionStorage.setItem(k, v); } catch(e){} };
+  var pausadaPeloConvidado = ler('musica-pausada') === '1';
+  var recolher = null, fade = null, esperandoToque = false, pausadaPorSair = false;
+
+  function mostrar(){ player.classList.add('visivel'); }
+  function abrirInfo(ms){
+    player.classList.remove('recolhido');
+    clearTimeout(recolher);
+    recolher = setTimeout(function(){ if(!audio.paused) player.classList.add('recolhido'); }, ms || 4500);
+  }
+  function estado(){
+    var tocando = !audio.paused;
+    player.classList.toggle('tocando', tocando);
+    texto.textContent = tocando ? 'Pausar' : 'Tocar';
+    disco.setAttribute('aria-label', tocando ? 'Pausar a música' : 'Tocar a música');
+    if(!tocando) player.classList.remove('recolhido');
+  }
+  function subirVolume(){
+    clearInterval(fade);
+    audio.volume = 0;
+    fade = setInterval(function(){ audio.volume = Math.min(VOLUME, audio.volume + 0.03); if(audio.volume >= VOLUME) clearInterval(fade); }, 80);
+  }
+  function tocar(){
+    if(audio.preload !== 'auto'){ audio.preload = 'auto'; }
+    var t = parseFloat(ler('musica-tempo'));
+    if(t > 0 && !audio.currentTime){ try { audio.currentTime = t; } catch(e){} }
+    subirVolume();
+    var p = audio.play();
+    if(p && p.catch) p.catch(function(){ estado(); esperarToque(); });
+  }
+  /* Se o navegador recusou o som (ex.: abriu rolando a página), tenta de novo no próximo toque. */
+  function esperarToque(){
+    if(esperandoToque || pausadaPeloConvidado) return;
+    esperandoToque = true;
+    var tentar = function(e){
+      if(player.contains(e.target)) return;
+      ['pointerup','keydown'].forEach(function(n){ window.removeEventListener(n, tentar, true); });
+      esperandoToque = false;
+      if(audio.paused && !pausadaPeloConvidado) tocar();
+    };
+    ['pointerup','keydown'].forEach(function(n){ window.addEventListener(n, tentar, true); });
+  }
+  function alternar(){
+    if(audio.paused){ pausadaPeloConvidado = false; gravar('musica-pausada', '0'); tocar(); abrirInfo(); }
+    else { pausadaPeloConvidado = true; gravar('musica-pausada', '1'); audio.pause(); }
+  }
+  disco.addEventListener('click', alternar);
+  acao.addEventListener('click', alternar);
+  player.addEventListener('mouseenter', function(){ player.classList.remove('recolhido'); clearTimeout(recolher); });
+  player.addEventListener('mouseleave', function(){ abrirInfo(1800); });
+
+  audio.addEventListener('play', function(){ estado(); abrirInfo(); });
+  audio.addEventListener('pause', estado);
+  audio.addEventListener('timeupdate', function(){
+    if(!audio.duration) return;
+    anel.style.strokeDashoffset = (VOLTA * (1 - audio.currentTime / audio.duration)).toFixed(1);
+  });
+  window.addEventListener('pagehide', function(){ gravar('musica-tempo', String(audio.currentTime || 0)); });
+  /* Saiu da aba ou bloqueou o celular: pausa e volta a tocar quando a pessoa voltar. */
+  document.addEventListener('visibilitychange', function(){
+    if(document.hidden){ if(!audio.paused){ pausadaPorSair = true; audio.pause(); } }
+    else if(pausadaPorSair){ pausadaPorSair = false; tocar(); }
+  });
+
+  window.musicaAoAbrir = function(){
+    setTimeout(mostrar, 900);
+    if(!pausadaPeloConvidado) tocar();
+  };
+  window.musicaSemCortina = function(){
+    mostrar();
+    estado();
+    if(!pausadaPeloConvidado) esperarToque();
+  };
+  /* Convite já aberto (link direto para uma seção ou animações reduzidas): o player aparece logo. */
+  var cortina = document.getElementById('curtain');
+  if(!cortina || cortina.classList.contains('done')) window.musicaSemCortina();
 })();
 </script>
 </body>
